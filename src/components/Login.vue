@@ -23,7 +23,7 @@ export default {
     },
     checkMail(input) {
       if (!input.includes("@")) return "Missing '@'";
-      if (!input.includes(".")) return "Missing '.'";
+      if (!input.includes(".com")) return "Missing '.com'";
       return true;
     },
   },
