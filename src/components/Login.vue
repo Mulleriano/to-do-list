@@ -18,27 +18,36 @@ export default {
         this.$router.push("/to-do");
       }, 2000);
     },
-    required(v) {
-      return !!v || "Field is required";
+    required(input) {
+      return !!input || "Field is required";
+    },
+    checkMail(input) {
+      if (!input.includes("@")) return "Missing '@'";
+      if (!input.includes(".")) return "Missing '.'";
+      return true;
     },
   },
 };
 </script>
 
 <template>
-  <v-sheet class="bg-deep-purple pa-12" rounded>
-    <v-card class="mx-auto px-6 py-8" max-width="344">
+  <v-sheet
+    class="bg-grey-lighten-2 pa-12 h-screen d-flex justify-center align-center"
+    rounded
+  >
+    <v-card class="w-100 px-6 py-8 elevation-15" max-width="344">
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-text-field
           v-model="email"
           :readonly="loading"
-          :rules="[required]"
+          :rules="[required, checkMail]"
           class="mb-2"
           clearable
           label="Email"
         ></v-text-field>
 
         <v-text-field
+          type="password"
           v-model="password"
           :readonly="loading"
           :rules="[required]"
