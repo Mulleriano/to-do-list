@@ -5,6 +5,8 @@ export default {
     email: null,
     password: null,
     loading: false,
+    show1: false,
+    password: "Password",
   }),
 
   methods: {
@@ -47,13 +49,17 @@ export default {
         ></v-text-field>
 
         <v-text-field
-          type="password"
           v-model="password"
-          :readonly="loading"
+          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
           :rules="[required]"
-          clearable
+          :type="show1 ? 'text' : 'password'"
+          name="input-10-1"
           label="Password"
           placeholder="Enter your password"
+          hint="At least 8 characters"
+          counter
+          @click:append="show1 = !show1"
+          :readonly="loading"
         ></v-text-field>
 
         <br />
