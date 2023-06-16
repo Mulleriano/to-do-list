@@ -3,13 +3,23 @@
 </script>
 
 <template>
-  <v-app-bar>
-    <v-btn icon="mdi-cat"></v-btn>
+  <v-app-bar class="px-4">
+    <v-app-bar-title>To Do</v-app-bar-title>
 
-    <v-app-bar-title>NAVBAR</v-app-bar-title>
-
-    <router-link to="/register">
-      <v-btn icon="mdi-account"></v-btn>
-    </router-link>
+    <v-menu
+      transition="scale-transition"
+      class="d-flex align-center justify-center"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn color="grey-darken-4" v-bind="props" icon="mdi-account"> </v-btn>
+      </template>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>
+            <router-link to="/">Log Out</router-link>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
