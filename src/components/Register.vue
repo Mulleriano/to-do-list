@@ -1,12 +1,14 @@
 <script>
 export default {
   data: () => ({
-    form: false,
+    form: true,
     username: null,
     email: null,
     password: null,
     confirmPassowrd: null,
     loading: false,
+    showPassword: false,
+    showConfirm: false,
   }),
   methods: {
     onSubmit() {
@@ -17,7 +19,8 @@ export default {
       setTimeout(() => {
         this.loading = false;
         this.$refs.forms.reset();
-      }, 2000);
+        this.$router.push("/");
+      }, 3000);
     },
     required(input) {
       return !!input || "Field is required";
@@ -36,7 +39,7 @@ export default {
       let regexSpecial = /\W|_/;
       let regexNumber = /(\d+)| /g;
       if (input.length < 8)
-        return "Must have 8 letters, 1 special character and 1 number";
+        return "At least 8 characters, 1 special and 1 number";
       if (!regexSpecial.test(input)) return "At least 1 special character";
       if (!regexNumber.test(input)) return "At least 1 number";
       return true;
@@ -82,22 +85,32 @@ export default {
             :rules="[required, checkMail]"
             variant="underlined"
           ></v-text-field>
+
           <v-text-field
+            class="pb-2"
             v-model="password"
             color="primary"
-            label="Password"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[required, checkPassword]"
+            :type="showPassword ? 'text' : 'password'"
+            label="Password"
             placeholder="Enter your password"
+            counter
+            @click:append="showPassword = !showPassword"
             variant="underlined"
-            type="password"
           ></v-text-field>
+
           <v-text-field
             v-model="confirmPassowrd"
             color="primary"
-            label="Confirm  Password"
+            :append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[required, testPassowrd]"
+            :type="showConfirm ? 'text' : 'password'"
+            label="Confirm Password"
+            placeholder="Enter your password"
+            counter
+            @click:append="showConfirm = !showConfirm"
             variant="underlined"
-            type="password"
           ></v-text-field>
         </v-container>
 

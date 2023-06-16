@@ -5,6 +5,7 @@ export default {
     email: null,
     password: null,
     loading: false,
+    showPassword: false,
   }),
 
   methods: {
@@ -23,7 +24,7 @@ export default {
     },
     checkMail(input) {
       if (!input.includes("@")) return "Missing '@'";
-      if (!input.includes(".")) return "Missing '.'";
+      if (!input.includes(".com")) return "Missing '.com'";
       return true;
     },
   },
@@ -39,7 +40,6 @@ export default {
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-text-field
           v-model="email"
-          :readonly="loading"
           :rules="[required, checkMail]"
           class="mb-2"
           clearable
@@ -47,13 +47,16 @@ export default {
         ></v-text-field>
 
         <v-text-field
-          type="password"
           v-model="password"
-          :readonly="loading"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :rules="[required]"
-          clearable
+          :type="showPassword ? 'text' : 'password'"
+          name="input-10-1"
           label="Password"
           placeholder="Enter your password"
+          hint="At least 8 characters"
+          counter
+          @click:append="showPassword = !showPassword"
         ></v-text-field>
 
         <br />
