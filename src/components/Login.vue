@@ -5,8 +5,7 @@ export default {
     email: null,
     password: null,
     loading: false,
-    show1: false,
-    password: "Password",
+    showPassword: false,
   }),
 
   methods: {
@@ -41,7 +40,6 @@ export default {
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-text-field
           v-model="email"
-          :readonly="loading"
           :rules="[required, checkMail]"
           class="mb-2"
           clearable
@@ -50,16 +48,15 @@ export default {
 
         <v-text-field
           v-model="password"
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :rules="[required]"
-          :type="show1 ? 'text' : 'password'"
+          :type="showPassword ? 'text' : 'password'"
           name="input-10-1"
           label="Password"
           placeholder="Enter your password"
           hint="At least 8 characters"
           counter
-          @click:append="show1 = !show1"
-          :readonly="loading"
+          @click:append="showPassword = !showPassword"
         ></v-text-field>
 
         <br />
