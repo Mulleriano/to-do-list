@@ -1,12 +1,13 @@
 <script setup>
 import DefaultBar from "./AppBar.vue";
-import DefaultView from "./View.vue";
 </script>
 
 <template>
   <v-app>
     <default-bar />
 
-    <default-view />
+    <v-main>
+      <router-view />
+    </v-main>
   </v-app>
 </template>
