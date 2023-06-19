@@ -41,7 +41,7 @@ export default {
       let regexNumber = /(\d+)| /g;
       if (input.includes(" ")) return "No spaces";
       if (input.length < 8)
-        return "At least 8 characters, 1 special and 1 number";
+        return "At least 8 characters";
       if (!regexSpecial.test(input)) return "At least 1 special character";
       if (!regexNumber.test(input)) return "At least 1 number";
       return true;
