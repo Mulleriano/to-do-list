@@ -27,6 +27,9 @@ export default {
       if (!input.includes(".com")) return "Missing '.com'";
       return true;
     },
+    checkPassword(input) {
+      return input.length < 8 ? "At least 8 characters" : true;
+    },
   },
 };
 </script>
@@ -49,7 +52,7 @@ export default {
         <v-text-field
           v-model="password"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :rules="[required]"
+          :rules="[required, checkPassword]"
           :type="showPassword ? 'text' : 'password'"
           name="input-10-1"
           label="Password"
