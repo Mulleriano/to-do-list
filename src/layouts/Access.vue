@@ -36,6 +36,7 @@ export default {
       <v-sheet
         color="transparent"
         max-width="800"
+        height="550"
         class="mx-8 pa-8 d-flex justify-left align-center elevation-15 rounded"
       >
         <div class="w-50">
@@ -50,9 +51,9 @@ export default {
           ></lottie-player>
         </div>
 
-        <div class="ml-6 w-50 d-flex justify-center">
+        <v-sheet position="relative" class="w-auto ml-6 w-50">
           <router-view @registered="registered" />
-        </div>
+        </v-sheet>
       </v-sheet>
     </v-main>
   </v-app>

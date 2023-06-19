@@ -52,12 +52,13 @@ export default {
 </script>
 
 <template>
-  <v-sheet class="w-100 h-auto" color="transparent">
+  <v-sheet min-width="300">
     <v-card
       color="transparent"
+      position="absolute"
       class="w-100 elevation-0"
       location="center"
-      title="User Registration"
+      title="Register"
     >
       <v-form v-model="form" @submit.prevent="onSubmit" ref="forms">
         <v-container>
@@ -75,7 +76,6 @@ export default {
             :rules="[required, checkMail]"
             variant="underlined"
           ></v-text-field>
-
           <v-text-field
             class="pb-2"
             v-model="password"
@@ -89,7 +89,6 @@ export default {
             @click:append="showPassword = !showPassword"
             variant="underlined"
           ></v-text-field>
-
           <v-text-field
             v-model="confirmPassowrd"
             color="primary"
@@ -103,9 +102,7 @@ export default {
             variant="underlined"
           ></v-text-field>
         </v-container>
-
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-btn
             :disabled="!form"
@@ -119,7 +116,6 @@ export default {
             Register
           </v-btn>
         </v-card-actions>
-
         <router-link to="/">
           <v-card-actions class="d-flex justify-center">
             <v-btn block color="grey-darken-4" size="large" variant="elevated">

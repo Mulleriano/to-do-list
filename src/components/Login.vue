@@ -34,9 +34,10 @@ export default {
 </script>
 
 <template>
-  <v-sheet class="w-100 h-auto" color="transparent">
+  <v-sheet min-width="300">
     <v-card
       color="transparent"
+      position="absolute"
       class="w-100 elevation-0"
       location="center"
       title="Login"
@@ -49,20 +50,22 @@ export default {
             class="mb-2"
             clearable
             label="Email"
+            variant="underlined"
           ></v-text-field>
           <v-text-field
+            class="pb-2"
             v-model="password"
+            color="primary"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[required, checkPassword]"
             :type="showPassword ? 'text' : 'password'"
-            name="input-10-1"
             label="Password"
             placeholder="Enter your password"
             hint="At least 8 characters"
             counter
             @click:append="showPassword = !showPassword"
+            variant="underlined"
           ></v-text-field>
-          <br />
           <v-btn
             :disabled="!form"
             :loading="loading"
