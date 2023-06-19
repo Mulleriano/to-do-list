@@ -32,23 +32,20 @@ export default {
       return true;
     },
     checkMail(input) {
-      if (!input.includes("@")) return "Missing '@'";
-      if (!input.includes(".com")) return "Missing '.com'";
-      return true;
+      var emailRegex = /.+@.+\..+/;
+      return !emailRegex.test(input) ? "Invalid email" : true;
     },
     checkPassword(input) {
       let regexSpecial = /\W|_/;
       let regexNumber = /(\d+)| /g;
       if (input.includes(" ")) return "No spaces";
-      if (input.length < 8)
-        return "At least 8 characters";
+      if (input.length < 8) return "At least 8 characters";
       if (!regexSpecial.test(input)) return "At least 1 special character";
       if (!regexNumber.test(input)) return "At least 1 number";
       return true;
     },
     testPassowrd(input) {
-      if (input !== this.password) return "Passwords don't match";
-      return true;
+      return input !== this.password ? "Passwords don't match" : true;
     },
   },
 };

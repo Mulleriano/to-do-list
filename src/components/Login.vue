@@ -23,9 +23,8 @@ export default {
       return !!input || "Field is required";
     },
     checkMail(input) {
-      if (!input.includes("@")) return "Missing '@'";
-      if (!input.includes(".com")) return "Missing '.com'";
-      return true;
+      var emailRegex = /.+@.+\..+/;
+      return !emailRegex.test(input) ? "Invalid email" : true;
     },
     checkPassword(input) {
       return input.length < 8 ? "At least 8 characters" : true;
