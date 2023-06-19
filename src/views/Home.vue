@@ -1,7 +1,7 @@
 <script setup>
-import Login from "@/components/Login.vue";
+import Access from "@/layouts/Access.vue";
 </script>
 
 <template>
-  <Login />
+  <Access />
 </template>
