@@ -52,12 +52,11 @@ export default {
 </script>
 
 <template>
-  <v-sheet>
+  <v-sheet class="w-100 h-auto" color="transparent">
     <v-card
-      class="w-100 px-6 py-8 elevation-15"
+      color="transparent"
+      class="w-100 elevation-0"
       location="center"
-      position="fixed"
-      max-width="344"
       title="User Registration"
     >
       <v-form v-model="form" @submit.prevent="onSubmit" ref="forms">
