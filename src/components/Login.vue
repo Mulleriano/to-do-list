@@ -39,7 +39,7 @@ export default {
       color="transparent"
       class="w-100 elevation-0"
       location="center"
-      title="User Registration"
+      title="Login"
     >
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-container>
