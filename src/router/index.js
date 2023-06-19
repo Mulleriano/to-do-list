@@ -4,18 +4,23 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
+    component: () => import("@/layouts/Access.vue"),
     children: [
       {
         path: "",
-        name: "Home",
+        name: "Login",
         component: () =>
-          import(/* webpackChunkName: "home" */ "@/views/Home.vue"),
+          import(
+            /* webpackChunkName: "home" */ "@/views/accsess/LoginPage.vue"
+          ),
       },
       {
         path: "register",
         name: "Register",
         component: () =>
-          import(/* webpackChunkName: "register" */ "@/components/Register.vue"),
+          import(
+            /* webpackChunkName: "home" */ "@/views/accsess/RegisterPage.vue"
+          ),
       },
     ],
   },
