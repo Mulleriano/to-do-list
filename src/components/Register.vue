@@ -66,11 +66,11 @@ export default {
   </div>
 
   <v-sheet
-    class="bg-grey-lighten-2 pa-12 h-screen d-flex justify-center align-center"
-    rounded
   >
     <v-card
       class="w-100 px-6 py-8 elevation-15"
+      location="center"
+      position="fixed"
       max-width="344"
       title="User Registration"
     >

@@ -35,11 +35,13 @@ export default {
 </script>
 
 <template>
-  <v-sheet
-    class="bg-grey-lighten-2 pa-12 h-screen d-flex justify-center align-center"
-    rounded
-  >
-    <v-card class="w-100 px-6 py-8 elevation-15" max-width="344">
+  <v-sheet>
+    <v-card
+      class="w-100 px-6 py-8 elevation-15"
+      max-width="344"
+      position="fixed"
+      location="center"
+    >
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-text-field
           v-model="email"
