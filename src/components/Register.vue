@@ -19,6 +19,7 @@ export default {
       setTimeout(() => {
         this.loading = false;
         this.$refs.forms.reset();
+        this.$emit("registered");
         this.$router.push("/");
       }, 3000);
     },
@@ -53,24 +54,11 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex justify-center">
-    <v-alert
-      class="mt-4 w-100 justify-center elevation-15"
-      max-width="344"
-      position="fixed"
-      v-show="loading"
-      type="success"
-      title="User registered"
-      text="The user was succesfully registered"
-    ></v-alert>
-  </div>
-
-  <v-sheet
-    class="bg-grey-lighten-2 pa-12 h-screen d-flex justify-center align-center"
-    rounded
-  >
+  <v-sheet>
     <v-card
       class="w-100 px-6 py-8 elevation-15"
+      location="center"
+      position="fixed"
       max-width="344"
       title="User Registration"
     >
