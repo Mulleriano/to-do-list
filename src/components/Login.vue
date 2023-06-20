@@ -45,10 +45,9 @@ export default {
       <v-form v-model="form" @submit.prevent="onSubmit">
         <v-container>
           <v-text-field
+            class="mb-2"
             v-model="email"
             :rules="[required, checkMail]"
-            class="mb-2"
-            clearable
             label="Email"
             append-icon="mdi-account-outline"
             variant="underlined"
@@ -56,15 +55,14 @@ export default {
           <v-text-field
             class="pb-2"
             v-model="password"
-            color="primary"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
             :rules="[required, checkPassword]"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
             placeholder="Enter your password"
             hint="At least 8 characters"
             counter
-            @click:append="showPassword = !showPassword"
             variant="underlined"
           ></v-text-field>
           <v-card-actions>
