@@ -20,12 +20,13 @@ export default {
     <v-main class="background d-flex flex-column justify-center align-center">
       <div>
         <v-alert
-          class="mt-4 w-100 justify-space-between elevation-15"
+          class="mt-4 w-100 justify-space-between elevation-15 rounded-lg"
           max-width="344"
           position="fixed"
           location="top"
           v-show="showAlert"
           type="success"
+          color="white"
           title="User registered!"
           text="Log in"
           closable
@@ -34,17 +35,17 @@ export default {
       </div>
 
       <v-sheet
-        color="transparent"
+        color="white"
         max-width="800"
         height="550"
         class="rounded-lg mx-8 d-flex justify-left flex-column flex-sm-row align-center elevation-15"
       >
         <div
-          class="bg-purple-lighten-4 h-100 w-100 pa-8 d-flex flex-column align-center justify-center rounded-s-lg"
+          class="bg-grey-darken-4 h-100 w-100 pa-8 d-flex flex-column align-center justify-center rounded-s-lg"
         >
-          <h1 class="text-purple-darken-3">TO DO LIST</h1>
+          <h1 class="text-green-accent-2">TO DO LIST</h1>
           <lottie-player
-            src="https://assets8.lottiefiles.com/packages/lf20_mf5j5kua.json"
+            src="https://assets9.lottiefiles.com/packages/lf20_KWqh4bY8YV.json"
             background="transparent"
             speed="1"
             style="width: 100%; height: auto"
@@ -63,12 +64,6 @@ export default {
 
 <style scoped>
 .background {
-  background: rgb(238, 174, 202);
-  background: radial-gradient(
-    circle,
-    rgba(238, 174, 202, 1) 0%,
-    rgba(186, 170, 212, 1) 61%,
-    rgba(109, 164, 228, 1) 100%
-  );
+  background: #01f6a8;
 }
 </style>
