@@ -1,3 +1,7 @@
+<script setup>
+import ToDo from "@/components/ToDo.vue";
+</script>
+
 <template>
-    TO DO LIST
+  <to-do />
 </template>

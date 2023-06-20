@@ -17,21 +17,23 @@ export default {
 </script>
 <template>
   <v-app>
-    <v-main class="background d-flex flex-column justify-center align-center">
+    <v-main class="bgGreen d-flex flex-column justify-center align-center">
       <div>
-        <v-alert
-          class="mt-4 w-100 justify-space-between elevation-15 rounded-lg"
-          max-width="344"
-          position="fixed"
-          location="top"
-          v-show="showAlert"
-          type="success"
-          color="white"
-          title="User registered!"
-          text="Log in"
-          closable
-        >
-        </v-alert>
+        <v-fade-transition>
+          <v-alert
+            class="mt-4 w-100 justify-space-between elevation-15 rounded-lg"
+            max-width="344"
+            position="fixed"
+            location="top"
+            v-show="showAlert"
+            type="success"
+            color="white"
+            title="User registered!"
+            text="Log in"
+            closable
+          >
+          </v-alert>
+        </v-fade-transition>
       </div>
 
       <v-sheet
@@ -63,7 +65,7 @@ export default {
 </template>
 
 <style scoped>
-.background {
+.bgGreen {
   background: #01f6a8;
 }
 </style>
