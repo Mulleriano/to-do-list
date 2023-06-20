@@ -17,7 +17,7 @@ export default {
 </script>
 <template>
   <v-app>
-    <v-main class="background d-flex flex-column justify-center align-center">
+    <v-main class="bgGreen d-flex flex-column justify-center align-center">
       <div>
         <v-fade-transition>
           <v-alert
@@ -65,7 +65,7 @@ export default {
 </template>
 
 <style scoped>
-.background {
+.bgGreen {
   background: #01f6a8;
 }
 </style>
