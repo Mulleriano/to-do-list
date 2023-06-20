@@ -50,6 +50,7 @@ export default {
             class="mb-2"
             clearable
             label="Email"
+            append-icon="mdi-account-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
@@ -66,29 +67,23 @@ export default {
             @click:append="showPassword = !showPassword"
             variant="underlined"
           ></v-text-field>
-          <v-btn
-            :disabled="!form"
-            :loading="loading"
-            block
-            color="success"
-            size="large"
-            type="submit"
-            variant="elevated"
-          >
-            Sign In
-          </v-btn>
-          <router-link to="/register">
+          <v-card-actions>
             <v-btn
+              :disabled="!form"
+              :loading="loading"
               block
-              color="grey-darken-4"
+              color="success"
               size="large"
               type="submit"
               variant="elevated"
-              class="mt-4"
             >
-              Register
+              Sign In
             </v-btn>
-          </router-link>
+          </v-card-actions>
+          <div class="d-flex flex-column align-center">
+            <p>Don't have an account?</p>
+            <router-link to="/register"> Sing Up </router-link>
+          </div>
         </v-container>
       </v-form>
     </v-card>
