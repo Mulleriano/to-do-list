@@ -67,6 +67,7 @@ export default {
             color="primary"
             label="Username"
             :rules="[required, checkUsername]"
+            append-icon="mdi-account-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
@@ -74,6 +75,7 @@ export default {
             color="primary"
             label="Email"
             :rules="[required, checkMail]"
+            append-icon="mdi-email-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
@@ -116,13 +118,12 @@ export default {
             Register
           </v-btn>
         </v-card-actions>
-        <router-link to="/">
-          <v-card-actions class="d-flex justify-center">
-            <v-btn block color="grey-darken-4" size="large" variant="elevated">
-              Sign In
-            </v-btn>
-          </v-card-actions>
-        </router-link>
+        <div class="d-flex flex-column align-center">
+          <p>Already have an account?</p>
+          <router-link to="/">
+            Sing in
+          </router-link>
+        </div>
       </v-form>
     </v-card>
   </v-sheet>
