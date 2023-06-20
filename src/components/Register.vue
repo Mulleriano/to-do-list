@@ -104,13 +104,12 @@ export default {
             variant="underlined"
           ></v-text-field>
         </v-container>
-        <v-divider></v-divider>
         <v-card-actions>
           <v-btn
             :disabled="!form"
             :loading="loading"
             block
-            color="purple-lighten-1"
+            color="#01f6a8"
             size="large"
             type="submit"
             variant="elevated"

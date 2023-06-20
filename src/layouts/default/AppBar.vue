@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <v-app-bar class="px-4">
+  <v-app-bar color="#01f6a8" class="px-4">
     <v-app-bar-title>To Do</v-app-bar-title>
 
     <v-menu

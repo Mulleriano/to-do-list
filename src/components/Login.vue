@@ -72,7 +72,7 @@ export default {
               :disabled="!form"
               :loading="loading"
               block
-              color="purple-lighten-1"
+              color="#01f6a8"
               size="large"
               type="submit"
               variant="elevated"
