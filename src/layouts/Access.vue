@@ -37,12 +37,12 @@ export default {
         color="transparent"
         max-width="800"
         height="550"
-        class="rounded-lg mx-8 d-flex justify-left flex-column flex-sm-row align-center elevation-15 rounded"
+        class="rounded-lg mx-8 d-flex justify-left flex-column flex-sm-row align-center elevation-15"
       >
         <div
-          class="w-50 h-sm-50 pa-8 d-flex flex-column align-center justify-end"
+          class="bg-purple-lighten-4 h-100 w-100 pa-8 d-flex flex-column align-center justify-center rounded-s-lg"
         >
-          <h1>TO DO LIST</h1>
+          <h1 class="text-purple-darken-3">TO DO LIST</h1>
           <lottie-player
             src="https://assets8.lottiefiles.com/packages/lf20_mf5j5kua.json"
             background="transparent"
@@ -53,7 +53,7 @@ export default {
           ></lottie-player>
         </div>
 
-        <v-sheet position="relative" class="w-50 ma-8">
+        <v-sheet position="relative" class="w-auto ma-8">
           <router-view @registered="registered" />
         </v-sheet>
       </v-sheet>
