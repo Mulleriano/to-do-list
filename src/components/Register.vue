@@ -64,7 +64,6 @@ export default {
         <v-container>
           <v-text-field
             v-model="username"
-            color="primary"
             label="Username"
             :rules="[required, checkUsername]"
             append-icon="mdi-account-outline"
@@ -72,7 +71,6 @@ export default {
           ></v-text-field>
           <v-text-field
             v-model="email"
-            color="primary"
             label="Email"
             :rules="[required, checkMail]"
             append-icon="mdi-email-outline"
@@ -81,26 +79,24 @@ export default {
           <v-text-field
             class="pb-2"
             v-model="password"
-            color="primary"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
             :rules="[required, checkPassword]"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
             placeholder="Enter your password"
             counter
-            @click:append="showPassword = !showPassword"
             variant="underlined"
           ></v-text-field>
           <v-text-field
             v-model="confirmPassowrd"
-            color="primary"
             :append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showConfirm = !showConfirm"
             :rules="[required, testPassowrd]"
             :type="showConfirm ? 'text' : 'password'"
             label="Confirm Password"
             placeholder="Enter your password"
             counter
-            @click:append="showConfirm = !showConfirm"
             variant="underlined"
           ></v-text-field>
         </v-container>
