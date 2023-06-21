@@ -11,7 +11,7 @@ const routes = [
         name: "Login",
         component: () =>
           import(
-            /* webpackChunkName: "home" */ "@/views/accsess/LoginPage.vue"
+            /* webpackChunkName: "home" */ "@/components/Login.vue"
           ),
       },
       {
@@ -19,7 +19,7 @@ const routes = [
         name: "Register",
         component: () =>
           import(
-            /* webpackChunkName: "home" */ "@/views/accsess/RegisterPage.vue"
+            /* webpackChunkName: "home" */ "@/components/Register.vue"
           ),
       },
     ],
