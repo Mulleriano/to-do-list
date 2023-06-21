@@ -26,9 +26,6 @@ export default {
       var emailRegex = /.+@.+\..+/;
       return !emailRegex.test(input) ? "Invalid email" : true;
     },
-    checkPassword(input) {
-      return input.length < 8 ? "At least 8 characters" : true;
-    },
   },
 };
 </script>
@@ -49,19 +46,17 @@ export default {
             v-model="email"
             :rules="[required, checkMail]"
             label="Email"
-            append-icon="mdi-account-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
             class="pb-2"
             v-model="password"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="showPassword = !showPassword"
-            :rules="[required, checkPassword]"
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="showPassword = !showPassword"
+            :rules="[required]"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
             placeholder="Enter your password"
-            hint="At least 8 characters"
             counter
             variant="underlined"
           ></v-text-field>
