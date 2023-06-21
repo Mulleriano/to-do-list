@@ -8,7 +8,6 @@ export default {
     confirmPassowrd: null,
     loading: false,
     showPassword: false,
-    showConfirm: false,
   }),
   methods: {
     onSubmit() {
@@ -39,7 +38,7 @@ export default {
       let regexSpecial = /\W|_/;
       let regexNumber = /(\d+)| /g;
       if (input.includes(" ")) return "No spaces";
-      if (input.length < 8) return "At least 8 characters";
+      if (input.length < 8) return "At least 8 characters, 1 special character and 1 number";
       if (!regexSpecial.test(input)) return "At least 1 special character";
       if (!regexNumber.test(input)) return "At least 1 number";
       return true;
@@ -66,21 +65,19 @@ export default {
             v-model="username"
             label="Username"
             :rules="[required, checkUsername]"
-            append-icon="mdi-account-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
             v-model="email"
             label="Email"
             :rules="[required, checkMail]"
-            append-icon="mdi-email-outline"
             variant="underlined"
           ></v-text-field>
           <v-text-field
             class="pb-2"
             v-model="password"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="showPassword = !showPassword"
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="showPassword = !showPassword"
             :rules="[required, checkPassword]"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
@@ -90,10 +87,10 @@ export default {
           ></v-text-field>
           <v-text-field
             v-model="confirmPassowrd"
-            :append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="showConfirm = !showConfirm"
-            :rules="[required, testPassowrd]"
-            :type="showConfirm ? 'text' : 'password'"
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="showPassword = !showPassword"
+            :rules="[testPassowrd]"
+            :type="showPassword ? 'text' : 'password'"
             label="Confirm Password"
             placeholder="Enter your password"
             counter
