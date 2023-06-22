@@ -1,6 +1,7 @@
 <script>
 import Login from "@/components/Login.vue";
 import { authAPiMixin } from "@/api/auth";
+import { setupPrivateApi } from "@/api";
 export default {
   data() {
     return {
@@ -23,9 +24,10 @@ export default {
       try {
         const { data } = await this.login(payload);
         const { access_token } = data;
-        console.log(data, access_token);
+        setupPrivateApi(access_token);
+        console.log(payload, access_token);
         localStorage.setItem("access_token", access_token);
-        this.$router.push("/to-do");
+        this.$router.push("/dashboard");
       } catch (err) {
         const status = err.response.status;
         if (status == 401) {
