@@ -1,5 +1,12 @@
-<script setup>
-//
+<script>
+export default {
+  methods: {
+    logOut() {
+      localStorage.removeItem("access_token");
+      this.$router.push("/");
+    },
+  },
+};
 </script>
 
 <template>
@@ -16,7 +23,7 @@
       <v-list>
         <v-list-item>
           <v-list-item-title>
-            <router-link to="/">Log Out</router-link>
+            <button @click="logOut">Log Out</button>
           </v-list-item-title>
         </v-list-item>
       </v-list>
