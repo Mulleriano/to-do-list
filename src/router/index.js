@@ -21,14 +21,14 @@ const routes = [
     ],
   },
   {
-    path: "/to-do",
+    path: "/dashboard",
     component: () => import("@/layouts/default/Default.vue"),
     children: [
       {
         path: "",
-        name: "list",
+        name: "Dashboard",
         component: () =>
-          import(/* webpackChunkName: "home" */ "@/views/ToDoList.vue"),
+          import(/* webpackChunkName: "home" */ "@/views/Dashboard.vue"),
       },
     ],
   },
