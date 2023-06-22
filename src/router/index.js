@@ -10,29 +10,25 @@ const routes = [
         path: "",
         name: "Login",
         component: () =>
-          import(
-            /* webpackChunkName: "home" */ "@/components/Login.vue"
-          ),
+          import(/* webpackChunkName: "home" */ "@/views/LoginPage.vue"),
       },
       {
         path: "register",
         name: "Register",
         component: () =>
-          import(
-            /* webpackChunkName: "home" */ "@/components/Register.vue"
-          ),
+          import(/* webpackChunkName: "home" */ "@/views/RegisterPage.vue"),
       },
     ],
   },
   {
-    path: "/to-do",
+    path: "/dashboard",
     component: () => import("@/layouts/default/Default.vue"),
     children: [
       {
         path: "",
-        name: "list",
+        name: "Dashboard",
         component: () =>
-          import(/* webpackChunkName: "home" */ "@/views/ToDoList.vue"),
+          import(/* webpackChunkName: "home" */ "@/views/Dashboard.vue"),
       },
     ],
   },

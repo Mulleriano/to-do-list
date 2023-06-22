@@ -1,16 +1,29 @@
 <script>
+import { authAPiMixin } from "@/api/auth";
 export default {
+  mixins: [authAPiMixin],
   data() {
     return {
-      showAlert: false,
+      alert: {
+        show: false,
+        type: "",
+        color: "",
+        title: "",
+        text: "",
+        loadingBtn: "",
+      },
     };
   },
   methods: {
-    registered() {
-      this.showAlert = true;
+    showAlert(data) {
+      this.alert.type = data.type;
+      this.alert.color = data.color;
+      this.alert.title = data.title;
+      this.alert.text = data.text;
+      this.alert.show = true;
       setTimeout(() => {
-        this.showAlert = false;
-      }, 3000);
+        this.alert.show = false;
+      }, 2000);
     },
   },
 };
@@ -25,12 +38,11 @@ export default {
             max-width="344"
             position="fixed"
             location="top"
-            v-show="showAlert"
-            type="success"
-            color="white"
-            title="User registered!"
-            text="Log in"
-            closable
+            v-show="alert.show"
+            :type="alert.type"
+            :color="alert.color"
+            :title="alert.title"
+            :text="alert.text"
           >
           </v-alert>
         </v-fade-transition>
@@ -57,7 +69,7 @@ export default {
         </div>
 
         <v-sheet position="relative" class="w-auto ma-8">
-          <router-view @registered="registered" />
+          <router-view @showAlert="showAlert" />
         </v-sheet>
       </v-sheet>
     </v-main>

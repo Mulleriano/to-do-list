@@ -1,26 +1,28 @@
 <script>
 export default {
+  props: {
+    loading: Boolean,
+  },
   data: () => ({
     form: true,
     username: null,
     email: null,
     password: null,
     confirmPassowrd: null,
-    loading: false,
     showPassword: false,
   }),
   methods: {
     onSubmit() {
       if (!this.form) return;
 
-      this.loading = true;
+      const payload = {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      };
 
-      setTimeout(() => {
-        this.loading = false;
-        this.$refs.forms.reset();
-        this.$emit("registered");
-        this.$router.push("/");
-      }, 3000);
+      this.$emit("registered", payload);
+      this.$refs.forms.reset();
     },
     required(input) {
       return !!input || "Field is required";
@@ -38,7 +40,8 @@ export default {
       let regexSpecial = /\W|_/;
       let regexNumber = /(\d+)| /g;
       if (input.includes(" ")) return "No spaces";
-      if (input.length < 8) return "At least 8 characters, 1 special character and 1 number";
+      if (input.length < 8)
+        return "At least 8 characters, 1 special character and 1 number";
       if (!regexSpecial.test(input)) return "At least 1 special character";
       if (!regexNumber.test(input)) return "At least 1 number";
       return true;
@@ -89,7 +92,7 @@ export default {
             v-model="confirmPassowrd"
             :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append-inner="showPassword = !showPassword"
-            :rules="[testPassowrd]"
+            :rules="[required, testPassowrd]"
             :type="showPassword ? 'text' : 'password'"
             label="Confirm Password"
             placeholder="Enter your password"
@@ -112,9 +115,7 @@ export default {
         </v-card-actions>
         <div class="d-flex flex-column align-center">
           <p>Already have an account?</p>
-          <router-link to="/">
-            Sing in
-          </router-link>
+          <router-link to="/"> Sign in </router-link>
         </div>
       </v-form>
     </v-card>

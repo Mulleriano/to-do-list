@@ -1,23 +1,25 @@
 <script>
 export default {
+  props: {
+    loading: Boolean,
+  },
   data: () => ({
     form: false,
     email: null,
     password: null,
-    loading: false,
     showPassword: false,
   }),
 
   methods: {
     onSubmit() {
       if (!this.form) return;
+      
+      const payload = {
+        email: this.email,
+        password: this.password,
+      };
 
-      this.loading = true;
-
-      setTimeout(() => {
-        this.loading = false;
-        this.$router.push("/to-do");
-      }, 2000);
+      this.$emit("submitLogin", payload);
     },
     required(input) {
       return !!input || "Field is required";
@@ -75,7 +77,7 @@ export default {
           </v-card-actions>
           <div class="d-flex flex-column align-center">
             <p>Don't have an account?</p>
-            <router-link to="/register"> Sing Up </router-link>
+            <router-link to="/register"> Sign Up </router-link>
           </div>
         </v-container>
       </v-form>
