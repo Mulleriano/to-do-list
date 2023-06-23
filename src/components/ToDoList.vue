@@ -12,7 +12,9 @@ export default {
 </script>
 <template>
   <div v-for="toDo in toDoList" :key="toDo.id">
+   <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
     {{ toDo.title }}
+   </router-link> 
   </div>
- 
+
 </template>
