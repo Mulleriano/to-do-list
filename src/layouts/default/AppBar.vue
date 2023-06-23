@@ -3,7 +3,7 @@ export default {
   methods: {
     logOut() {
       localStorage.removeItem("access_token");
-      this.$router.push("/");
+      location.replace("/");
     },
   },
 };
