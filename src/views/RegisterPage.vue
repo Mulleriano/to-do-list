@@ -26,7 +26,6 @@ export default {
         this.$emit("showAlert", this.alert);
         this.$router.push("/");
       } catch (err) {
-        console.log(err);
         const status = err.response.status;
         if (status >= 500 && status < 600) {
           this.alert.type = "error";

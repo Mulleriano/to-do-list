@@ -25,7 +25,7 @@ export default {
         const { data } = await this.login(payload);
         const { access_token } = data;
         setupPrivateApi(access_token);
-        console.log(payload, access_token);
+        console.log(access_token);
         localStorage.setItem("access_token", access_token);
         this.$router.push("/dashboard");
       } catch (err) {
