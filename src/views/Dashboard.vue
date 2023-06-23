@@ -45,7 +45,7 @@ export default {
 <template>
   <to-do-list :toDoList="toDoList" />
 
-  <v-form @submit.prevent="createList">
+  <v-form @submit.prevent="createList" class="w-50">
     <v-text-field
     v-model = "listTitle">
     </v-text-field>
