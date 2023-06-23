@@ -8,6 +8,7 @@ export default {
   },
   data() {
     return {
+      listTitle: "",
       toDoList: [],
     };
   },
@@ -21,6 +22,19 @@ export default {
         console.log(err);
       }
     },
+    async createList() {
+      try {
+        const title = {
+        title: this.listTitle
+      }
+        const { data } = await this.create(title);
+        this.toDoList.push(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.listTitle = "";
+      }
+    },
   },
   mounted() {
     this.getLists();
@@ -30,4 +44,13 @@ export default {
 
 <template>
   <to-do-list :toDoList="toDoList" />
+
+  <v-form @submit.prevent="createList">
+    <v-text-field
+    v-model = "listTitle">
+    </v-text-field>
+    <v-btn @click="createList">
+      Criar
+    </v-btn>
+  </v-form>
 </template>
