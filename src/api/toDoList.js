@@ -5,5 +5,8 @@ export const toDoListsApiMixin = {
     async list() {
       return await privateApi.get("/lists");
     },
-  },
+    async create(title) {
+      return await privateApi.post("/lists/new", title)
+    },
+  }, 
 };

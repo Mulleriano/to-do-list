@@ -1,5 +1,10 @@
 <script>
 export default {
+  data(){
+    return {
+      title: [],
+    }
+  },
   props: {
     toDoList: Array,
   },
@@ -9,4 +14,5 @@ export default {
   <div v-for="toDo in toDoList" :key="toDo.id">
     {{ toDo.title }}
   </div>
+ 
 </template>
