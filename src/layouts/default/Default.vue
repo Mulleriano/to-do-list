@@ -13,7 +13,8 @@ import DefaultBar from "./AppBar.vue";
 </template>
 
 <style scoped>
+/* Estilo removido para melhorar visualização
 .bgBlack {
   background: #212121;
-}
+} */
 </style>
