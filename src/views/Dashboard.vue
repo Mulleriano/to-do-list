@@ -9,13 +9,14 @@ export default {
   data() {
     return {
       loadingBtn: false,
-      removeTitle: false,
-      updateTitle: false,
-      selectedToDo: null,
+      showRemove: false,
+      showUpdate: false,
       listTitle: "",
-      title: "",
-      selected: "",
+      updateTitle: "",
+      selectedId: "",
       toDoList: [],
+      loadingRemove: false,
+      loadingUpdate: false,
       alert: {
         type: "success",
         color: "#01f6a8",
@@ -42,8 +43,8 @@ export default {
         };
         const { data } = await this.create(payload);
         this.toDoList.push(data);
-        this.alert.title = "Lista criada com sucesso"
-        this.$emit("showAlert", this.alert)
+        this.alert.title = "Lista criada com sucesso";
+        this.$emit("showAlert", this.alert);
       } catch (err) {
         const status = err.response.status;
         if (status >= 500 && status < 600) {
@@ -65,12 +66,12 @@ export default {
       }
     },
 
-    async removeList() {
-        try {
-        await this.remove(this.selected);
-        this.alert.title = "Lista excluída com sucesso"
-        this.$emit("showAlert", this.alert)
-        this.closeModal();
+    async removeList(id) {
+      try {
+        this.loadingRemove = true;
+        await this.remove(id);
+        this.alert.title = "Lista excluída com sucesso";
+        this.$emit("showAlert", this.alert);
         this.getLists();
       } catch (err) {
         const status = err.response.status;
@@ -87,44 +88,40 @@ export default {
           this.alert.text = "Pedimos desculpa pelo inconveniente";
           this.$emit("showAlert", this.alert);
         }
+      } finally {
+        this.showRemove = false;
+        this.loadingRemove = false;
       }
     },
 
-    async saveEdit() {
-      this.loadingBtn = true;
+    async updateList(id) {
       try {
-        this.updateTitle = false;
-        const payload = {
-          title: this.title,
+        this.loadingUpdate = true;
+        const title = {
+          title: this.updateTitle,
         };
-        await this.update(this.selected, payload);
+        await this.update(id, title);
         this.getLists();
-      } 
-      catch (err) {
+      } catch (err) {
         alert("Erro ao editar a lista");
       } finally {
-        this.loadingBtn = false;
+        this.loadingUpdate = false;
+        this.showUpdate = false;
       }
     },
-  
-    openModal(toDo) {
-      this.selectedToDo = toDo;
-      this.selected = toDo.id
-      this.removeTitle = true;
+
+    startRemove(toDo) {
+      this.showRemove = true;
+      this.removeTitle = toDo.title;
+      this.selectedId = toDo.id;
+      if (this.showUpdate) this.showUpdate = false;
     },
 
-    closeModal() {
-      this.removeTitle = false;
-    },
-
-    startEdit(toDo) {
-      this.updateTitle = true;
-      this.title = toDo.title;
-      this.selected = toDo.id
-    },
-
-    stopEdit() {
-      this.updateTitle = false;
+    startUpdate(toDo) {
+      this.showUpdate = true;
+      this.updateTitle = toDo.title;
+      this.selectedId = toDo.id;
+      if (this.showRemove) this.showRemove = false;
     },
   },
   mounted() {
@@ -134,34 +131,68 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div v-for="toDo in toDoList" :key="toDo.id">
-      <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
-        {{ toDo.title }}
-      </router-link>
-      <v-icon class="mdi mdi-delete" size="large" @click="openModal(toDo)"></v-icon>
+  <v-form @submit.prevent="createList" class="w-50">
+    <v-text-field
+      v-model="listTitle"
+      placeholder="Título da lista"
+    ></v-text-field>
+    <v-btn
+      :disabled="listTitle === ''"
+      @click="createList()"
+      :loading="loadingBtn"
+      >Criar</v-btn
+    >
+  </v-form>
 
-      <v-icon class="mdi mdi-pencil" size="large" @click="startEdit(toDo)"></v-icon>
-    </div>
+  <v-card v-for="toDo in toDoList" :key="toDo.id">
+    <v-list-item>
+      <v-list-title>
+        <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
+          {{ toDo.title }}
+        </router-link>
+      </v-list-title>
+      <template v-slot:append>
+        <v-icon
+          class="mdi mdi-delete"
+          size="large"
+          @click="startRemove(toDo)"
+        ></v-icon>
+        <v-icon
+          class="mdi mdi-pencil"
+          size="large"
+          @click="startUpdate(toDo)"
+        ></v-icon>
+      </template>
+    </v-list-item>
+  </v-card>
 
-    <div v-if="removeTitle">
-      <v-card>
-        <v-card-title>Deletar Lista</v-card-title>
-        <v-card-subtitle>Tem certeza que quer deletar a lista '{{ selectedToDo.title }}'?</v-card-subtitle>
-        <v-btn @click="closeModal">Cancelar</v-btn>
-        <v-btn @click="removeList">Deletar</v-btn>
-      </v-card>
-    </div>
+  <v-card v-show="showRemove">
+    <v-card>
+      <v-card-title>Delete</v-card-title>
+      <v-card-text>Are you shure you want to delete?</v-card-text>
+      <v-card-actions>
+        <v-btn @click="showRemove = !showRemove">Close</v-btn>
+        <v-btn
+          :loading="loadingRemove"
+          color="error"
+          @click="removeList(selectedId)"
+          >Delete</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </v-card>
 
-    <div v-if="updateTitle">
-      <v-text-field v-model="title" outlined></v-text-field>
-      <v-btn @click="stopEdit">Cancelar</v-btn>
-      <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
-    </div>
-
-    <v-form class="w-50">
-      <v-text-field v-model="listTitle" placeholder="Título da lista"></v-text-field>
-      <v-btn :disabled="listTitle === ''" @click="createList()" :loading="loadingBtn">Criar</v-btn>
-    </v-form>
-  </div>
+  <v-card v-show="showUpdate">
+    <v-card-title>Edit</v-card-title>
+    <v-text-field v-model="updateTitle" outlined></v-text-field>
+    <v-card-actions>
+      <v-btn @click="showUpdate = !showUpdate">close</v-btn>
+      <v-btn
+        color="success"
+        @click="updateList(selectedId)"
+        :loading="loadingUpdate"
+        >Save</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
