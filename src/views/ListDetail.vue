@@ -13,7 +13,12 @@ export default {
     editItems: false,
     itemTitle: "",
     items: [],
-    editedItem: {title: ""}
+    editedItem: {title: ""},
+    alert: {
+        type: "success",
+        color: "#01f6a8",
+        title: "Item criado com sucesso!",
+      },
     };
   },
   methods: {
@@ -37,8 +42,23 @@ export default {
         };
         const { data } = await this.createItem(item);
         this.items.push(data);
+        this.alert.title = "Item criado com sucesso"
+        this.$emit("showAlert", this.alert)
       } catch (err) {
-        console.log(err);
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Ocorreu um erro no servidor";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        } else {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Algo deu errado :(";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        }
       } finally {
         this.itemTitle = "";
         this.loadingBtn = false;
@@ -48,25 +68,40 @@ export default {
     async handleDelete(id) {
         this.loadingBtn = true;
       try {
-        const { data } = await this.deleteItem(id);
+        const { data } = await this.removeItem(id);
         this.items = this.items.filter((item) => item.id !== id);
         this.showList();
+        this.alert.title = "Item excluído com sucesso"
+        this.$emit("showAlert", this.alert)
       } catch (err) {
-        console.log(err);
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Ocorreu um erro no servidor";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        } else {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Algo deu errado :(";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        }
       } finally {
         this.loadingBtn = false;
-        this.closemodalDelete(); 
+        this.deleteObj = false;
       }
     },
     
-    async saveeditItem() {
+    async saveEditItem() {
     try {
         this.editItems = false;
         const payload = {
         title: this.editedItem.title,
         };
     
-        await this.editItem(this.id, payload);
+        await this.updateItem(this.id, payload);
         this.showList();
     } catch (err) {
         console.log(err)
@@ -79,27 +114,25 @@ export default {
           done: item.done,
         };
         await this.updateItem(item.id, payload);
+       
       } catch (err) {
         console.log(err);
       }
     },
 
-    starteditItem(item) {
+    startEditItem(item) {
     this.editedItem = { ...item }; // faz uma cópia independente
     this.editItems = true;
     this.id = item.id;
     },
 
-    stopeditItem() {
+    stopEditItem() {
       this.editItems = false;
     },
-    openmodalDelete(itemId) {
+    openModalDelete(itemId) {
         this.selectedToDo = itemId;
       this.itemId = itemId; 
       this.deleteObj = true;
-    },
-    closemodalDelete() {
-      this.deleteObj = false;
     },
   },
   mounted() {
@@ -111,10 +144,10 @@ export default {
 <template>
   <v-form class="w-50">
     <v-text-field v-model="itemTitle" type="text" placeholder="Título do item"></v-text-field>
-    <v-btn @click="handleCreate" :loading="loadingBtn">Criar</v-btn>
+    <v-btn :disabled="itemTitle === ''" @click="handleCreate" :loading="loadingBtn">Criar</v-btn>
 
     <v-card v-for="item in items" :key="item.id">
-      <v-list-item @click="item.done = !item.done">
+      <v-list-item>
         <template v-slot:prepend>
           <v-checkbox-btn v-model="item.done" @change="updateItemStatus(item)" color="grey"></v-checkbox-btn>
          
@@ -125,8 +158,8 @@ export default {
             {{ item.title }}
           </span>
 
-          <v-icon size="large" class="mdi mdi-delete" @click="openmodalDelete(item.id)"></v-icon>
-          <v-icon size="large" class="mdi mdi-pencil" @click="starteditItem(item)"></v-icon>
+          <v-icon size="large" class="mdi mdi-delete" @click="openModalDelete(item.id)"></v-icon>
+          <v-icon size="large" class="mdi mdi-pencil" @click="startEditItem(item)"></v-icon>
         </v-list-item-title>
 
         <template v-slot:append>
@@ -139,8 +172,8 @@ export default {
 
     <div v-if="editItems">
       <v-text-field v-model="editedItem.title" outlined></v-text-field>
-      <v-btn @click="saveeditItem">Salvar</v-btn>
-      <v-btn @click="stopeditItem">Cancelar</v-btn>
+      <v-btn @click="saveEditItem">Salvar</v-btn>
+      <v-btn @click="stopEditItem">Cancelar</v-btn>
     </div>
 
     <div v-if="deleteObj">
@@ -148,7 +181,7 @@ export default {
         <v-card-title>Deletar Item</v-card-title>
         <v-card-subtitle>Tem certeza que quer deletar esse item?</v-card-subtitle>
         <v-btn @click="handleDelete(itemId)" :loading="loadingBtn">Confirmar</v-btn>
-        <v-btn @click="closemodalDelete">Cancelar</v-btn>
+        <v-btn @click="deleteObj =!deleteObj">Cancelar</v-btn>
       </v-card>
     </div>
     </v-form>

@@ -11,14 +11,12 @@ export default {
     toDoList: Array,
   },
   methods: {
-    async deleteList(ListId) {
-      console.log(ListId);
+    async removeList(ListId) {
       try {
         const { data } = await this.delete(ListId);
         this.toDoList = this.toDoList.filter(
           (toDoList) => this.toDoList.id !== ListId
         );
-        console.log(`Item com ID ${ListId} excluído com sucesso.`);
       } catch (err) {
         console.log(err);
       }
@@ -31,6 +29,6 @@ export default {
     <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
       {{ toDo.title }}
     </router-link>
-    <span class="mdi mdi-delete" @click.once="deleteList(toDo.id)"></span>
+    <span class="mdi mdi-delete" @click.once="removeList(toDo.id)"></span>
   </div>
 </template>
