@@ -172,16 +172,16 @@ export default {
 
     <div v-if="editItems">
       <v-text-field v-model="editedItem.title" outlined></v-text-field>
-      <v-btn @click="saveEditItem">Salvar</v-btn>
       <v-btn @click="stopEditItem">Cancelar</v-btn>
+      <v-btn @click="saveEditItem">Salvar</v-btn>
     </div>
 
     <div v-if="deleteObj">
       <v-card>
         <v-card-title>Deletar Item</v-card-title>
         <v-card-subtitle>Tem certeza que quer deletar esse item?</v-card-subtitle>
-        <v-btn @click="handleDelete(itemId)" :loading="loadingBtn">Confirmar</v-btn>
         <v-btn @click="deleteObj =!deleteObj">Cancelar</v-btn>
+        <v-btn @click="handleDelete(itemId)" :loading="loadingBtn">Deletar</v-btn>
       </v-card>
     </div>
     </v-form>
