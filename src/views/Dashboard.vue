@@ -148,15 +148,15 @@ export default {
       <v-card>
         <v-card-title>Deletar Lista</v-card-title>
         <v-card-subtitle>Tem certeza que quer deletar a lista '{{ selectedToDo.title }}'?</v-card-subtitle>
-        <v-btn @click="removeList">Confirmar</v-btn>
         <v-btn @click="closeModal">Cancelar</v-btn>
+        <v-btn @click="removeList">Deletar</v-btn>
       </v-card>
     </div>
 
     <div v-if="updateTitle">
       <v-text-field v-model="title" outlined></v-text-field>
-      <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
       <v-btn @click="stopEdit">Cancelar</v-btn>
+      <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
     </div>
 
     <v-form class="w-50">
