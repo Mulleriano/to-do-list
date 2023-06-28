@@ -11,10 +11,10 @@ export const toDoListsApiMixin = {
     async view(ListId) {
       return await privateApi.get(`/lists/${ListId}`)
     },
-    async delete(ListId, payload) {
+    async remove(ListId, payload) {
       return await privateApi.delete(`/lists/${ListId}`, payload)
     },
-    async edit(ListId, payload) {
+    async update(ListId, payload) {
       return await privateApi.patch(`/lists/${ListId}`, payload)
     }
   }, 

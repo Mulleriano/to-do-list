@@ -9,13 +9,18 @@ export default {
   data() {
     return {
       loadingBtn: false,
-      deleteTitle: false,
-      editTitle: false,
+      removeTitle: false,
+      updateTitle: false,
       selectedToDo: null,
       listTitle: "",
       title: "",
       selected: "",
       toDoList: [],
+      alert: {
+        type: "success",
+        color: "#01f6a8",
+        title: "Lista criada com sucesso!",
+      },
     };
   },
   mixins: [toDoListsApiMixin],
@@ -37,37 +42,62 @@ export default {
         };
         const { data } = await this.create(payload);
         this.toDoList.push(data);
+        this.alert.title = "Lista criada com sucesso"
+        this.$emit("showAlert", this.alert)
       } catch (err) {
-        console.log(err);
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Ocorreu um erro no servidor";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        } else {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Algo deu errado :(";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        }
       } finally {
         this.listTitle = "";
         this.loadingBtn = false;
       }
     },
 
-    async deleteList() {
+    async removeList() {
         try {
-          const payload = {
-          title: this.title,
-        };
-        console.log(this.selected, payload);
-        await this.delete(this.selected, payload);
+        await this.remove(this.selected);
+        this.alert.title = "Lista excluída com sucesso"
+        this.$emit("showAlert", this.alert)
         this.closeModal();
         this.getLists();
       } catch (err) {
-        console.log(err);
+        const status = err.response.status;
+        if (status >= 500 && status < 600) {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Ocorreu um erro no servidor";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        } else {
+          this.alert.type = "error";
+          this.alert.color = "error";
+          this.alert.title = "Algo deu errado :(";
+          this.alert.text = "Pedimos desculpa pelo inconveniente";
+          this.$emit("showAlert", this.alert);
+        }
       }
     },
 
     async saveEdit() {
       this.loadingBtn = true;
       try {
-        this.editTitle = false;
+        this.updateTitle = false;
         const payload = {
           title: this.title,
         };
-        console.log(this.selected, payload)
-        await this.edit(this.selected, payload);
+        await this.update(this.selected, payload);
         this.getLists();
       } 
       catch (err) {
@@ -80,21 +110,21 @@ export default {
     openModal(toDo) {
       this.selectedToDo = toDo;
       this.selected = toDo.id
-      this.deleteTitle = true;
+      this.removeTitle = true;
     },
 
     closeModal() {
-      this.deleteTitle = false;
+      this.removeTitle = false;
     },
 
     startEdit(toDo) {
-      this.editTitle = true;
+      this.updateTitle = true;
       this.title = toDo.title;
       this.selected = toDo.id
     },
 
     stopEdit() {
-      this.editTitle = false;
+      this.updateTitle = false;
     },
   },
   mounted() {
@@ -114,24 +144,24 @@ export default {
       <v-icon class="mdi mdi-pencil" size="large" @click="startEdit(toDo)"></v-icon>
     </div>
 
-    <div v-if="deleteTitle">
+    <div v-if="removeTitle">
       <v-card>
         <v-card-title>Deletar Lista</v-card-title>
         <v-card-subtitle>Tem certeza que quer deletar a lista '{{ selectedToDo.title }}'?</v-card-subtitle>
-        <v-btn @click="deleteList">Confirmar</v-btn>
+        <v-btn @click="removeList">Confirmar</v-btn>
         <v-btn @click="closeModal">Cancelar</v-btn>
       </v-card>
     </div>
 
-    <div v-if="editTitle">
+    <div v-if="updateTitle">
       <v-text-field v-model="title" outlined></v-text-field>
       <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
       <v-btn @click="stopEdit">Cancelar</v-btn>
     </div>
 
     <v-form class="w-50">
-      <v-text-field v-model="listTitle"></v-text-field>
-      <v-btn @click="createList()" :loading="loadingBtn">Criar</v-btn>
+      <v-text-field v-model="listTitle" placeholder="Título da lista"></v-text-field>
+      <v-btn :disabled="listTitle === ''" @click="createList()" :loading="loadingBtn">Criar</v-btn>
     </v-form>
   </div>
 </template>
