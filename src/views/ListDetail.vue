@@ -6,15 +6,15 @@ export default {
   mixins: [toDoListsApiMixin, itemsApiMixin],
   data() {
     return {
-    listId: this.$route.params.id,
-    itemId: null, 
-    deleteObj: false,
-    loadingBtn: false,
-    editItems: false,
-    itemTitle: "",
-    items: [],
-    editedItem: {title: ""},
-    alert: {
+      listId: this.$route.params.id,
+      itemId: null,
+      deleteObj: false,
+      loadingBtn: false,
+      editItems: false,
+      itemTitle: "",
+      items: [],
+      editedItem: { title: "" },
+      alert: {
         type: "success",
         color: "#01f6a8",
         title: "Item criado com sucesso!",
@@ -42,8 +42,8 @@ export default {
         };
         const { data } = await this.createItem(item);
         this.items.push(data);
-        this.alert.title = "Item criado com sucesso"
-        this.$emit("showAlert", this.alert)
+        this.alert.title = "Item criado com sucesso";
+        this.$emit("showAlert", this.alert);
       } catch (err) {
         const status = err.response.status;
         if (status >= 500 && status < 600) {
@@ -66,13 +66,13 @@ export default {
     },
 
     async handleDelete(id) {
-        this.loadingBtn = true;
+      this.loadingBtn = true;
       try {
         const { data } = await this.removeItem(id);
         this.items = this.items.filter((item) => item.id !== id);
         this.showList();
-        this.alert.title = "Item excluído com sucesso"
-        this.$emit("showAlert", this.alert)
+        this.alert.title = "Item excluído com sucesso";
+        this.$emit("showAlert", this.alert);
       } catch (err) {
         const status = err.response.status;
         if (status >= 500 && status < 600) {
@@ -93,19 +93,19 @@ export default {
         this.deleteObj = false;
       }
     },
-    
+
     async saveEditItem() {
-    try {
+      try {
         this.editItems = false;
         const payload = {
-        title: this.editedItem.title,
+          title: this.editedItem.title,
         };
-    
+
         await this.updateItem(this.id, payload);
         this.showList();
-    } catch (err) {
-        console.log(err)
-    }
+      } catch (err) {
+        console.log(err);
+      }
     },
 
     async updateItemStatus(item) {
@@ -114,24 +114,23 @@ export default {
           done: item.done,
         };
         await this.updateItem(item.id, payload);
-       
       } catch (err) {
         console.log(err);
       }
     },
 
     startEditItem(item) {
-    this.editedItem = { ...item }; // faz uma cópia independente
-    this.editItems = true;
-    this.id = item.id;
+      this.editedItem = { ...item }; // faz uma cópia independente
+      this.editItems = true;
+      this.id = item.id;
     },
 
     stopEditItem() {
       this.editItems = false;
     },
     openModalDelete(itemId) {
-        this.selectedToDo = itemId;
-      this.itemId = itemId; 
+      this.selectedToDo = itemId;
+      this.itemId = itemId;
       this.deleteObj = true;
     },
   },
@@ -142,27 +141,66 @@ export default {
 </script>
 
 <template>
-  <v-form class="w-50">
-    <v-text-field v-model="itemTitle" type="text" placeholder="Título do item"></v-text-field>
-    <v-btn :disabled="itemTitle === ''" @click="handleCreate" :loading="loadingBtn">Criar</v-btn>
+  <v-btn
+    color="transparent"
+    @click="this.$router.push('/dashboard')"
+    position="absolute"
+    class="ma-4 elevation-0"
+    size="x-large"
+    icon="mdi-arrow-left-drop-circle"
+  >
+  </v-btn>
+  <v-form class="my-6 d-flex flex-column align-center">
+    <v-text-field
+      class="w-25 bg-white"
+      v-model="itemTitle"
+      type="text"
+      placeholder="Título do item"
+      variant="underlined"
+    ></v-text-field>
+    <v-btn
+      color="#01f6a8"
+      :disabled="itemTitle === ''"
+      @click="handleCreate"
+      :loading="loadingBtn"
+      >Criar</v-btn
+    >
 
-    <v-card v-for="item in items" :key="item.id">
+    <v-card
+      color="#01f6a8"
+      class="mx-auto w-50 my-4 py-4 pr-4"
+      v-for="item in items"
+      :key="item.id"
+    >
       <v-list-item>
         <template v-slot:prepend>
-          <v-checkbox-btn v-model="item.done" @change="updateItemStatus(item)" color="grey"></v-checkbox-btn>
-         
+          <v-checkbox-btn
+            v-model="item.done"
+            @change="updateItemStatus(item)"
+            color="grey"
+          ></v-checkbox-btn>
         </template>
 
         <v-list-item-title>
-          <span :class="item.done ? 'text-grey' : 'text-primary'">
+          <span
+            :class="item.done ? 'text-grey-darken-2' : 'text-grey-darken-4'"
+          >
             {{ item.title }}
           </span>
-
-          <v-icon size="large" class="mdi mdi-delete" @click="openModalDelete(item.id)"></v-icon>
-          <v-icon size="large" class="mdi mdi-pencil" @click="startEditItem(item)"></v-icon>
         </v-list-item-title>
 
         <template v-slot:append>
+          <v-icon
+            size="large"
+            class="mdi mdi-delete"
+            @click="openModalDelete(item.id)"
+          ></v-icon>
+          <v-icon
+            size="large"
+            class="mdi mdi-pencil"
+            @click="startEditItem(item)"
+          ></v-icon>
+
           <v-expand-x-transition>
             <v-icon v-if="item.done" color="success">mdi-check</v-icon>
           </v-expand-x-transition>
@@ -179,11 +217,14 @@ export default {
     <div v-if="deleteObj">
       <v-card>
         <v-card-title>Deletar Item</v-card-title>
-        <v-card-subtitle>Tem certeza que quer deletar esse item?</v-card-subtitle>
-        <v-btn @click="deleteObj =!deleteObj">Cancelar</v-btn>
-        <v-btn @click="handleDelete(itemId)" :loading="loadingBtn">Deletar</v-btn>
+        <v-card-subtitle
+          >Tem certeza que quer deletar esse item?</v-card-subtitle
+        >
+        <v-btn @click="deleteObj = !deleteObj">Cancelar</v-btn>
+        <v-btn @click="handleDelete(itemId)" :loading="loadingBtn"
+          >Deletar</v-btn
+        >
       </v-card>
     </div>
-    </v-form>
+  </v-form>
 </template>
-
