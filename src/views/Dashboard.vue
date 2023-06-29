@@ -46,7 +46,6 @@ export default {
         this.loadingCreate = false;
       }
     },
-
     async removeList(id) {
       try {
         this.loadingRemove = true;
@@ -73,6 +72,7 @@ export default {
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
+
       } finally {
         this.loadingUpdate = false;
         this.showUpdate = false;

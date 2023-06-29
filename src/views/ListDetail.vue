@@ -53,13 +53,14 @@ export default {
         this.loadingCreate = false;
       }
     },
-
     async handleRemove(id) {
       try {
         this.loadingRemove = true;
         await this.removeItem(id);
         this.deleteAlert();
         this.showList();
+        this.alert.title = "Item excluído com sucesso";
+        this.$emit("showAlert", this.alert);
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
