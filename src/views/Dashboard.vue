@@ -1,6 +1,8 @@
 <script>
 import ToDoList from "@/components/ToDoList.vue";
 import { toDoListsApiMixin } from "@/api/toDoList";
+import handleAlertMixin from "@/mixins/handleAlert";
+import loadingMixin from "@/mixins/loading";
 
 export default {
   components: {
@@ -8,23 +10,15 @@ export default {
   },
   data() {
     return {
-      loadingBtn: false,
       showRemove: false,
       showUpdate: false,
       listTitle: "",
       updateTitle: "",
       selectedId: "",
       toDoList: [],
-      loadingRemove: false,
-      loadingUpdate: false,
-      alert: {
-        type: "success",
-        color: "#01f6a8",
-        title: "Lista criada com sucesso!",
-      },
     };
   },
-  mixins: [toDoListsApiMixin],
+  mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin],
   methods: {
     async getLists() {
       try {
@@ -36,33 +30,20 @@ export default {
     },
 
     async createList() {
-      this.loadingBtn = true;
+      this.loadingCreate = true;
       try {
-        const payload = {
+        const title = {
           title: this.listTitle,
         };
-        const { data } = await this.create(payload);
+        const { data } = await this.create(title);
         this.toDoList.push(data);
-        this.alert.title = "Lista criada com sucesso";
-        this.$emit("showAlert", this.alert);
+        this.createAlert();
       } catch (err) {
-        const status = err.response.status;
-        if (status >= 500 && status < 600) {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Ocorreu um erro no servidor";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        } else {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Algo deu errado :(";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        }
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
         this.listTitle = "";
-        this.loadingBtn = false;
+        this.loadingCreate = false;
       }
     },
 
@@ -70,24 +51,11 @@ export default {
       try {
         this.loadingRemove = true;
         await this.remove(id);
-        this.alert.title = "Lista excluída com sucesso";
-        this.$emit("showAlert", this.alert);
+        this.deleteAlert();
         this.getLists();
       } catch (err) {
-        const status = err.response.status;
-        if (status >= 500 && status < 600) {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Ocorreu um erro no servidor";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        } else {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Algo deu errado :(";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        }
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
         this.showRemove = false;
         this.loadingRemove = false;
@@ -103,7 +71,8 @@ export default {
         await this.update(id, title);
         this.getLists();
       } catch (err) {
-        alert("Erro ao editar a lista");
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
         this.loadingUpdate = false;
         this.showUpdate = false;
@@ -112,7 +81,6 @@ export default {
 
     startRemove(toDo) {
       this.showRemove = true;
-      this.removeTitle = toDo.title;
       this.selectedId = toDo.id;
       if (this.showUpdate) this.showUpdate = false;
     },
@@ -139,7 +107,7 @@ export default {
     <v-btn
       :disabled="listTitle === ''"
       @click="createList()"
-      :loading="loadingBtn"
+      :loading="loadingCreate"
       >Criar</v-btn
     >
   </v-form>
