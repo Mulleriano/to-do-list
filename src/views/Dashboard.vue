@@ -42,8 +42,8 @@ export default {
         };
         const { data } = await this.create(payload);
         this.toDoList.push(data);
-        this.alert.title = "Lista criada com sucesso"
-        this.$emit("showAlert", this.alert)
+        this.alert.title = "Lista criada com sucesso";
+        this.$emit("showAlert", this.alert);
       } catch (err) {
         const status = err.response.status;
         if (status >= 500 && status < 600) {
@@ -66,10 +66,10 @@ export default {
     },
 
     async removeList() {
-        try {
+      try {
         await this.remove(this.selected);
-        this.alert.title = "Lista excluída com sucesso"
-        this.$emit("showAlert", this.alert)
+        this.alert.title = "Lista excluída com sucesso";
+        this.$emit("showAlert", this.alert);
         this.closeModal();
         this.getLists();
       } catch (err) {
@@ -99,17 +99,16 @@ export default {
         };
         await this.update(this.selected, payload);
         this.getLists();
-      } 
-      catch (err) {
+      } catch (err) {
         alert("Erro ao editar a lista");
       } finally {
         this.loadingBtn = false;
       }
     },
-  
+
     openModal(toDo) {
       this.selectedToDo = toDo;
-      this.selected = toDo.id
+      this.selected = toDo.id;
       this.removeTitle = true;
     },
 
@@ -120,7 +119,7 @@ export default {
     startEdit(toDo) {
       this.updateTitle = true;
       this.title = toDo.title;
-      this.selected = toDo.id
+      this.selected = toDo.id;
     },
 
     stopEdit() {
@@ -135,33 +134,77 @@ export default {
 
 <template>
   <div>
-    <div v-for="toDo in toDoList" :key="toDo.id">
-      <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
-        {{ toDo.title }}
-      </router-link>
-      <v-icon class="mdi mdi-delete" size="large" @click="openModal(toDo)"></v-icon>
+    <v-form class="my-6 d-flex flex-column align-center">
+      <v-text-field
+        class="w-25 bg-white"
+        v-model="listTitle"
+        label="Create List"
+        placeholder="List Title"
+        variant="underlined"
+      ></v-text-field>
+      <v-btn
+        color="#01f6a8"
+        :disabled="listTitle === ''"
+        @click="createList()"
+        :loading="loadingBtn"
+        >Create</v-btn
+      >
+    </v-form>
 
-      <v-icon class="mdi mdi-pencil" size="large" @click="startEdit(toDo)"></v-icon>
-    </div>
+    <v-card
+      color="#01f6a8"
+      class="mx-auto w-50 my-4 py-4 pr-4"
+      v-for="toDo in toDoList"
+      :key="toDo.id"
+    >
+      <v-list-item>
+        <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
+          <v-card-title class="text-grey-darken-4">{{
+            toDo.title
+          }}</v-card-title>
+        </router-link>
+        <template v-slot:append>
+          <v-icon
+            color="grey-darken-4"
+            class="mdi mdi-delete"
+            size="large"
+            @click="openModal(toDo)"
+          ></v-icon>
+          <v-icon
+            class="mdi mdi-pencil"
+            size="large"
+            @click="startEdit(toDo)"
+          ></v-icon>
+        </template>
+      </v-list-item>
+    </v-card>
 
     <div v-if="removeTitle">
       <v-card>
         <v-card-title>Deletar Lista</v-card-title>
-        <v-card-subtitle>Tem certeza que quer deletar a lista '{{ selectedToDo.title }}'?</v-card-subtitle>
+        <v-card-subtitle
+          >Tem certeza que quer deletar a lista '{{
+            selectedToDo.title
+          }}'?</v-card-subtitle
+        >
         <v-btn @click="closeModal">Cancelar</v-btn>
         <v-btn @click="removeList">Deletar</v-btn>
       </v-card>
     </div>
 
-    <div v-if="updateTitle">
-      <v-text-field v-model="title" outlined></v-text-field>
-      <v-btn @click="stopEdit">Cancelar</v-btn>
-      <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
+    <div class="modal w-100 h-100 mt-0" v-if="updateTitle">
+      <v-card class="w-50 mx-auto">
+        <v-card-title>Editar</v-card-title>
+        <v-text-field
+          class="pa-4"
+          v-model="title"
+          variant="underlined"
+        ></v-text-field>
+        <v-btn @click="stopEdit">Cancelar</v-btn>
+        <v-btn @click="saveEdit" :loading="loadingBtn">Salvar</v-btn>
+      </v-card>
     </div>
-
-    <v-form class="w-50">
-      <v-text-field v-model="listTitle" placeholder="Título da lista"></v-text-field>
-      <v-btn :disabled="listTitle === ''" @click="createList()" :loading="loadingBtn">Criar</v-btn>
-    </v-form>
   </div>
 </template>
+
+<style></style>
