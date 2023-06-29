@@ -30,8 +30,8 @@ export default {
     },
 
     async createList() {
-      this.loadingCreate = true;
       try {
+        this.loadingCreate = true;
         const title = {
           title: this.listTitle,
         };

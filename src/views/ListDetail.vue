@@ -1,11 +1,16 @@
 <script>
 import { toDoListsApiMixin } from "@/api/toDoList";
-import { itemsApiMixin } from "@/api/Items";
+import { toDoItemsApiMixin } from "@/api/toDoItems";
 import handleAlertMixin from "@/mixins/handleAlert";
 import loadingMixin from "@/mixins/loading";
 
 export default {
-  mixins: [toDoListsApiMixin, itemsApiMixin, handleAlertMixin, loadingMixin],
+  mixins: [
+    toDoListsApiMixin,
+    toDoItemsApiMixin,
+    handleAlertMixin,
+    loadingMixin,
+  ],
   data() {
     return {
       items: [],
@@ -41,7 +46,6 @@ export default {
         this.items.push(data);
         this.createAlert();
       } catch (err) {
-        console.log(err);
         const message = err.message;
         this.errorAlert(message);
       } finally {
@@ -54,9 +58,8 @@ export default {
       try {
         this.loadingRemove = true;
         await this.removeItem(id);
-        this.items = this.items.filter((item) => item.id !== id);
-        this.showList();
         this.deleteAlert();
+        this.showList();
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
@@ -97,11 +100,13 @@ export default {
     startRemove(item) {
       this.showRemove = true;
       this.selectedId = item.id;
+      if (this.showUpdate) this.showUpdate = false;
     },
     startUpdate(item) {
       this.showUpdate = true;
       this.updateTitle = item.title;
       this.selectedId = item.id;
+       if (this.showRemove) this.showRemove = false;
     },
   },
   mounted() {
