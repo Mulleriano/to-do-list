@@ -1,24 +1,26 @@
 <script>
 import { toDoListsApiMixin } from "@/api/toDoList";
-import { itemsApiMixin } from "@/api/Items";
+import { toDoItemsApiMixin } from "@/api/toDoItems";
+import handleAlertMixin from "@/mixins/handleAlert";
+import loadingMixin from "@/mixins/loading";
 
 export default {
-  mixins: [toDoListsApiMixin, itemsApiMixin],
+  mixins: [
+    toDoListsApiMixin,
+    toDoItemsApiMixin,
+    handleAlertMixin,
+    loadingMixin,
+  ],
   data() {
     return {
-      listId: this.$route.params.id,
-      itemId: null,
-      deleteObj: false,
-      loadingBtn: false,
-      editItems: false,
-      itemTitle: "",
       items: [],
-      editedItem: { title: "" },
-      alert: {
-        type: "success",
-        color: "#01f6a8",
-        title: "Item criado com sucesso!",
-      },
+      listTitle: "",
+      listId: this.$route.params.id,
+      showRemove: false,
+      showUpdate: false,
+      createTitle: "",
+      updateTitle: "",
+      selectedId: null,
     };
   },
   methods: {
@@ -33,105 +35,79 @@ export default {
     },
 
     async handleCreate() {
-      this.loadingBtn = true;
       try {
+        this.loadingCreate = true;
         const item = {
-          title: this.itemTitle,
+          title: this.createTitle,
           deadline: "2012-01-26T13:51:50.417-07:00",
           listId: this.listId,
         };
         const { data } = await this.createItem(item);
         this.items.push(data);
-        this.alert.title = "Item criado com sucesso";
-        this.$emit("showAlert", this.alert);
+        this.createAlert();
       } catch (err) {
-        const status = err.response.status;
-        if (status >= 500 && status < 600) {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Ocorreu um erro no servidor";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        } else {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Algo deu errado :(";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        }
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
-        this.itemTitle = "";
-        this.loadingBtn = false;
+        this.createTitle = "";
+        this.loadingCreate = false;
       }
     },
-
-    async handleDelete(id) {
-      this.loadingBtn = true;
+    async handleRemove(id) {
       try {
-        const { data } = await this.removeItem(id);
-        this.items = this.items.filter((item) => item.id !== id);
+        this.loadingRemove = true;
+        await this.removeItem(id);
+        this.deleteAlert();
         this.showList();
         this.alert.title = "Item excluído com sucesso";
         this.$emit("showAlert", this.alert);
       } catch (err) {
-        const status = err.response.status;
-        if (status >= 500 && status < 600) {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Ocorreu um erro no servidor";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        } else {
-          this.alert.type = "error";
-          this.alert.color = "error";
-          this.alert.title = "Algo deu errado :(";
-          this.alert.text = "Pedimos desculpa pelo inconveniente";
-          this.$emit("showAlert", this.alert);
-        }
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
-        this.loadingBtn = false;
-        this.deleteObj = false;
+        this.loadingRemove = false;
+        this.showRemove = false;
       }
     },
 
-    async saveEditItem() {
+    async handleUpdate(id) {
       try {
-        this.editItems = false;
-        const payload = {
-          title: this.editedItem.title,
+        this.loadingUpdate = true;
+        const title = {
+          title: this.updateTitle,
         };
-
-        await this.updateItem(this.id, payload);
+        await this.updateItem(id, title);
         this.showList();
       } catch (err) {
-        console.log(err);
+        const message = err.message;
+        this.errorAlert(message);
+      } finally {
+        this.loadingUpdate = false;
+        this.showUpdate = false;
       }
     },
 
-    async updateItemStatus(item) {
+    async handleStatus(item) {
       try {
         let payload = {
           done: item.done,
         };
         await this.updateItem(item.id, payload);
       } catch (err) {
-        console.log(err);
+        const message = err.message;
+        this.errorAlert(message);
       }
     },
-
-    startEditItem(item) {
-      this.editedItem = { ...item }; // faz uma cópia independente
-      this.editItems = true;
-      this.id = item.id;
+    startRemove(item) {
+      this.showRemove = true;
+      this.selectedId = item.id;
+      if (this.showUpdate) this.showUpdate = false;
     },
-
-    stopEditItem() {
-      this.editItems = false;
-    },
-    openModalDelete(itemId) {
-      this.selectedToDo = itemId;
-      this.itemId = itemId;
-      this.deleteObj = true;
+    startUpdate(item) {
+      this.showUpdate = true;
+      this.updateTitle = item.title;
+      this.selectedId = item.id;
+       if (this.showRemove) this.showRemove = false;
     },
   },
   mounted() {
@@ -141,90 +117,83 @@ export default {
 </script>
 
 <template>
-  <v-btn
-    color="transparent"
-    @click="this.$router.push('/dashboard')"
-    position="absolute"
-    class="ma-4 elevation-0"
-    size="x-large"
-    icon="mdi-arrow-left-drop-circle"
-  >
-  </v-btn>
-  <v-form class="my-6 d-flex flex-column align-center">
+  <h2>{{ listTitle }}</h2>
+  <v-form class="w-50" @submit.prevent="handleCreate">
     <v-text-field
-      class="w-25 bg-white"
-      v-model="itemTitle"
+      v-model="createTitle"
       type="text"
       placeholder="Título do item"
-      variant="underlined"
     ></v-text-field>
-    <v-btn
-      color="#01f6a8"
-      :disabled="itemTitle === ''"
-      @click="handleCreate"
-      :loading="loadingBtn"
-      >Criar</v-btn
-    >
-
-    <v-card
-      color="#01f6a8"
-      class="mx-auto w-50 my-4 py-4 pr-4"
-      v-for="item in items"
-      :key="item.id"
-    >
-      <v-list-item>
-        <template v-slot:prepend>
-          <v-checkbox-btn
-            v-model="item.done"
-            @change="updateItemStatus(item)"
-            color="grey"
-          ></v-checkbox-btn>
-        </template>
-
-        <v-list-item-title>
-          <span
-            :class="item.done ? 'text-grey-darken-2' : 'text-grey-darken-4'"
-          >
-            {{ item.title }}
-          </span>
-        </v-list-item-title>
-
-        <template v-slot:append>
-          <v-icon
-            size="large"
-            class="mdi mdi-delete"
-            @click="openModalDelete(item.id)"
-          ></v-icon>
-          <v-icon
-            size="large"
-            class="mdi mdi-pencil"
-            @click="startEditItem(item)"
-          ></v-icon>
-
-          <v-expand-x-transition>
-            <v-icon v-if="item.done" color="success">mdi-check</v-icon>
-          </v-expand-x-transition>
-        </template>
-      </v-list-item>
-    </v-card>
-
-    <div v-if="editItems">
-      <v-text-field v-model="editedItem.title" outlined></v-text-field>
-      <v-btn @click="stopEditItem">Cancelar</v-btn>
-      <v-btn @click="saveEditItem">Salvar</v-btn>
-    </div>
-
-    <div v-if="deleteObj">
-      <v-card>
-        <v-card-title>Deletar Item</v-card-title>
-        <v-card-subtitle
-          >Tem certeza que quer deletar esse item?</v-card-subtitle
-        >
-        <v-btn @click="deleteObj = !deleteObj">Cancelar</v-btn>
-        <v-btn @click="handleDelete(itemId)" :loading="loadingBtn"
-          >Deletar</v-btn
-        >
-      </v-card>
-    </div>
   </v-form>
+  <v-btn
+    :disabled="createTitle === ''"
+    @click="handleCreate"
+    :loading="loadingCreate"
+    >Criar</v-btn
+  >
+
+  <v-card v-for="item in items" :key="item.id">
+    <v-list-item>
+      <template v-slot:prepend>
+        <v-checkbox-btn
+          v-model="item.done"
+          @change="handleStatus(item)"
+          color="grey"
+        ></v-checkbox-btn>
+      </template>
+
+      <v-list-item-title>
+        <span :class="item.done ? 'text-grey' : 'text-primary'">
+          {{ item.title }}
+        </span>
+
+        <v-icon
+          size="large"
+          class="mdi mdi-delete"
+          @click="startRemove(item)"
+        ></v-icon>
+        <v-icon
+          size="large"
+          class="mdi mdi-pencil"
+          @click="startUpdate(item)"
+        ></v-icon>
+      </v-list-item-title>
+
+      <template v-slot:append>
+        <v-expand-x-transition>
+          <v-icon v-if="item.done" color="success">mdi-check</v-icon>
+        </v-expand-x-transition>
+      </template>
+    </v-list-item>
+  </v-card>
+
+  <v-card v-show="showUpdate">
+    <v-card-title>Edit</v-card-title>
+    <v-form @submit.prevent="handleUpdate(selectedId)">
+      <v-text-field v-model="updateTitle" outlined></v-text-field>
+    </v-form>
+    <v-card-actions>
+      <v-btn @click="showUpdate = !showUpdate">Close</v-btn>
+      <v-btn
+        :loading="loadingUpdate"
+        color="success"
+        @click="handleUpdate(selectedId)"
+        >Save</v-btn
+      >
+    </v-card-actions>
+  </v-card>
+
+  <v-card v-show="showRemove">
+    <v-card-title>Delete</v-card-title>
+    <v-card-text>Are you shure you want to delete this item?</v-card-text>
+    <v-card-actions>
+      <v-btn @click="showRemove = !showRemove">Close</v-btn>
+      <v-btn
+        @click="handleRemove(selectedId)"
+        color="error"
+        :loading="loadingRemove"
+        >Delete</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
