@@ -110,6 +110,15 @@ export default {
 
 <template>
   <v-sheet
+    v-if="toDoList.length == 0"
+    position="fixed"
+    location="center"
+    align="center"
+  >
+    <p class="font-italic text-grey-darken-1">No To Do's yet, create one!</p>
+  </v-sheet>
+
+  <v-sheet
     color="transparent"
     class="ma-6"
     style="z-index: 20001"
