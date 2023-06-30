@@ -1,10 +1,5 @@
 <script>
-import DefaultBar from "./AppBar.vue";
-
 export default {
-  components: {
-    DefaultBar
-  },
   data() {
     return {
       alert: {
@@ -15,6 +10,8 @@ export default {
         text: "",
         loadingBtn: "",
       },
+      drawer: true,
+      rail: true,
     };
   },
   methods: {
@@ -28,37 +25,102 @@ export default {
         this.alert.show = false;
       }, 2000);
     },
-  }
+    logOut() {
+      localStorage.removeItem("access_token");
+      location.replace("/");
+    },
+    checkDashboard() {
+      if (this.$route.path == "/dashboard") {
+        this.rail = true;
+      }
+    },
+  },
+  mounted() {
+    this.checkDashboard();
+  },
 };
 </script>
 
 <template>
-      <div>
-        <v-fade-transition>
-          <v-alert
-            style= "z-index:20001"
-            class="mt-4 w-100 justify-space-between elevation-15 rounded-lg"
-            max-width="344"
-            position="fixed"
-            location="top"
-            v-show="alert.show"
-            :type="alert.type"
-            :color="alert.color"
-            :title="alert.title"
-            :text="alert.text"
-          >
-          </v-alert>
-        </v-fade-transition>
-      </div>
+  <div>
+    <v-fade-transition>
+      <v-alert
+        style="z-index: 20001"
+        class="mt-4 w-100 justify-space-between elevation-15 rounded-lg"
+        max-width="344"
+        position="fixed"
+        location="top"
+        v-show="alert.show"
+        :type="alert.type"
+        :color="alert.color"
+        :title="alert.title"
+        :text="alert.text"
+      >
+      </v-alert>
+    </v-fade-transition>
+  </div>
 
-    <v-app>
-    <default-bar />
+  <v-app>
+    <v-card height="100vh">
+      <v-layout>
+        <v-navigation-drawer
+          color="grey-darken-4"
+          v-model="drawer"
+          :rail="rail"
+          permanent
+        >
+          <v-list-item title="User" nav @click="rail = false">
+            <template v-slot:append>
+              <v-btn
+                color="#01f6a8"
+                variant="text"
+                icon="mdi-chevron-left"
+                @click.stop="rail = !rail"
+              ></v-btn>
+            </template>
+            <template v-slot:prepend>
+              <v-icon color="#01f6a8" class="pa-5">mdi-account</v-icon>
+            </template>
+          </v-list-item>
 
-    <v-main class="bgBlack">
-      <router-view @showAlert="showAlert" />
-    </v-main>
+          <v-divider></v-divider>
+
+          <v-list density="compact" nav>
+            <v-list-item
+              to="/dashboard"
+              color="#01f6a8"
+              prepend-icon="mdi-view-dashboard"
+              title="Dashboard"
+              value="Dashboard"
+              @click="this.$router.push('/dashboard')"
+            ></v-list-item>
+            <!--             <v-list-item
+              prepend-icon="mdi-account"
+              title="My Account"
+              value="account"
+            ></v-list-item> -->
+
+            <!--             <v-list-item
+              prepend-icon="mdi-account-group-outline"
+              title="Users"
+              value="users"
+            ></v-list-item> -->
+          </v-list>
+
+          <template v-slot:append>
+            <div class="pa-6">
+              <v-btn color="#01f6a8" v-show="!rail" @click="logOut" block>
+                Log Out
+              </v-btn>
+            </div>
+          </template>
+        </v-navigation-drawer>
+        <v-main style="height: 100vh; overflow-y: auto">
+          <router-view @showAlert="showAlert" />
+        </v-main>
+      </v-layout>
+    </v-card>
   </v-app>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
