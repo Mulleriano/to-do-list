@@ -25,16 +25,20 @@ export default {
       createTitle: "",
       selectedTitle: "",
       selectedId: null,
+      loading: false,
     };
   },
   methods: {
     async showList() {
       try {
+        this.loading = true;
         const { data } = await this.view(this.listId);
         this.items = data.items;
         this.listTitle = data.title;
       } catch (err) {
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     },
     async handleCreate(title) {
@@ -105,6 +109,22 @@ export default {
 </script>
 
 <template>
+  <v-sheet
+    v-if="loading"
+    style="transform: translate(-25%, -60%); z-index: 1"
+    position="absolute"
+    location="center"
+  >
+    <lottie-player
+      src="https://assets8.lottiefiles.com/packages/lf20_poqmycwy.json"
+      background="transparent"
+      speed="1.5"
+      style="width: 60%"
+      loop
+      autoplay
+    ></lottie-player>
+  </v-sheet>
+
   <v-sheet
     v-if="items.length == 0"
     position="fixed"

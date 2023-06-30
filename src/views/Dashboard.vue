@@ -22,16 +22,20 @@ export default {
       selectedTitle: "",
       selectedId: "",
       toDoList: [],
+      loading: false,
     };
   },
   mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin],
   methods: {
     async getLists() {
       try {
+        this.loading = true;
         const { data } = await this.list();
         this.toDoList = data;
       } catch (err) {
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -109,6 +113,22 @@ export default {
 </script>
 
 <template>
+  <v-sheet
+    v-show="loading"
+    style="transform: translate(-25%, -60%); z-index: 1"
+    position="absolute"
+    location="center"
+  >
+    <lottie-player
+      src="https://assets8.lottiefiles.com/packages/lf20_poqmycwy.json"
+      background="transparent"
+      speed="1.5"
+      style="width: 60%"
+      loop
+      autoplay
+    ></lottie-player>
+  </v-sheet>
+
   <v-sheet
     v-if="toDoList.length == 0"
     position="fixed"
