@@ -15,3 +15,12 @@ export default {
 <template>
   <router-view />
 </template>
+
+<style>
+a {
+  text-decoration: none !important;
+}
+a:hover {
+  opacity: 0.7;
+}
+</style>

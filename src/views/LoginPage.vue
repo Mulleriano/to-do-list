@@ -2,6 +2,7 @@
 import Login from "@/components/Login.vue";
 import { authAPiMixin } from "@/api/auth";
 import { setupPrivateApi } from "@/api";
+import handleAlert from "@/mixins/handleAlert";
 export default {
   data() {
     return {
@@ -14,7 +15,7 @@ export default {
       },
     };
   },
-  mixins: [authAPiMixin],
+  mixins: [authAPiMixin, handleAlert],
   components: {
     Login,
   },
@@ -25,18 +26,11 @@ export default {
         const { data } = await this.login(payload);
         const { access_token } = data;
         setupPrivateApi(access_token);
-        console.log(access_token);
         localStorage.setItem("access_token", access_token);
         this.$router.push("/dashboard");
       } catch (err) {
-        const status = err.response.status;
-        if (status == 401) {
-          this.$emit("showAlert", this.alert);
-        } else {
-          this.alert.title = "Ocorreu um erro!";
-          this.alert.text = "Tente novamente mais tarde";
-          this.$emit("showAlert", this.alert);
-        }
+        const message = err.message;
+        this.errorAlert(message);
       } finally {
         this.loadingBtn = false;
       }

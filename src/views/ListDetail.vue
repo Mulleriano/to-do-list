@@ -3,8 +3,11 @@ import { toDoListsApiMixin } from "@/api/toDoList";
 import { toDoItemsApiMixin } from "@/api/toDoItems";
 import handleAlertMixin from "@/mixins/handleAlert";
 import loadingMixin from "@/mixins/loading";
+import CreateModal from "@/components/CreateModal.vue";
 
+import UpdateModal from "@/components/UpdateModal.vue";
 export default {
+  components: { CreateModal, UpdateModal },
   mixins: [
     toDoListsApiMixin,
     toDoItemsApiMixin,
@@ -16,29 +19,32 @@ export default {
       items: [],
       listTitle: "",
       listId: this.$route.params.id,
+      showCreate: false,
       showRemove: false,
       showUpdate: false,
       createTitle: "",
-      updateTitle: "",
+      selectedTitle: "",
       selectedId: null,
+      loading: false,
     };
   },
   methods: {
     async showList() {
       try {
+        this.loading = true;
         const { data } = await this.view(this.listId);
         this.items = data.items;
         this.listTitle = data.title;
       } catch (err) {
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     },
-
-    async handleCreate() {
+    async handleCreate(title) {
       try {
-        this.loadingCreate = true;
         const item = {
-          title: this.createTitle,
+          title: title,
           deadline: "2012-01-26T13:51:50.417-07:00",
           listId: this.listId,
         };
@@ -50,43 +56,34 @@ export default {
         this.errorAlert(message);
       } finally {
         this.createTitle = "";
-        this.loadingCreate = false;
+        this.showCreate = false;
       }
     },
     async handleRemove(id) {
       try {
-        this.loadingRemove = true;
         await this.removeItem(id);
-        this.deleteAlert();
         this.showList();
-        this.alert.title = "Item excluído com sucesso";
-        this.$emit("showAlert", this.alert);
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
       } finally {
-        this.loadingRemove = false;
         this.showRemove = false;
       }
     },
-
-    async handleUpdate(id) {
+    async handleUpdate(title) {
       try {
-        this.loadingUpdate = true;
-        const title = {
-          title: this.updateTitle,
+        const payload = {
+          title: title,
         };
-        await this.updateItem(id, title);
+        await this.updateItem(this.selectedId, payload);
         this.showList();
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
       } finally {
-        this.loadingUpdate = false;
         this.showUpdate = false;
       }
     },
-
     async handleStatus(item) {
       try {
         let payload = {
@@ -98,16 +95,11 @@ export default {
         this.errorAlert(message);
       }
     },
-    startRemove(item) {
-      this.showRemove = true;
-      this.selectedId = item.id;
-      if (this.showUpdate) this.showUpdate = false;
-    },
     startUpdate(item) {
       this.showUpdate = true;
-      this.updateTitle = item.title;
+      this.selectedTitle = item.title;
       this.selectedId = item.id;
-       if (this.showRemove) this.showRemove = false;
+      if (this.showRemove) this.showRemove = false;
     },
   },
   mounted() {
@@ -117,83 +109,116 @@ export default {
 </script>
 
 <template>
-  <h2>{{ listTitle }}</h2>
-  <v-form class="w-50" @submit.prevent="handleCreate">
-    <v-text-field
-      v-model="createTitle"
-      type="text"
-      placeholder="Título do item"
-    ></v-text-field>
-  </v-form>
-  <v-btn
-    :disabled="createTitle === ''"
-    @click="handleCreate"
-    :loading="loadingCreate"
-    >Criar</v-btn
+  <v-sheet
+    v-if="loading"
+    style="transform: translate(-25%, -60%); z-index: 1"
+    position="absolute"
+    location="center"
   >
+    <lottie-player
+      src="https://assets8.lottiefiles.com/packages/lf20_poqmycwy.json"
+      background="transparent"
+      speed="1.5"
+      style="width: 60%"
+      loop
+      autoplay
+    ></lottie-player>
+  </v-sheet>
 
-  <v-card v-for="item in items" :key="item.id">
-    <v-list-item>
+  <v-sheet
+    v-if="items.length == 0"
+    position="fixed"
+    location="center"
+    align="center"
+  >
+    <p class="font-italic text-grey-darken-1">No Tasks yet, create one!</p>
+  </v-sheet>
+
+  <v-sheet
+    color="transparent"
+    class="ma-6"
+    style="z-index: 20001"
+    position="fixed"
+    location="left-top"
+  >
+    <v-btn
+      color="#01f6a8"
+      icon="mdi-arrow-left"
+      size="large"
+      @click="this.$router.push('/dashboard')"
+    >
+      <v-icon color="grey-darken-4" size="x-large"> </v-icon
+    ></v-btn>
+  </v-sheet>
+  <v-sheet
+    color="transparent"
+    class="ma-6"
+    style="z-index: 20001"
+    position="fixed"
+    location="bottom"
+  >
+    <v-btn
+      color="#01f6a8"
+      icon="mdi-plus"
+      size="x-large"
+      @click="showCreate = !showCreate"
+    >
+      <v-icon color="grey-darken-4" size="x-large"> </v-icon
+    ></v-btn>
+  </v-sheet>
+
+  <v-sheet class="ma-4" align="center">
+    <h2 class="text-grey-darken-4">
+      {{ listTitle.toUpperCase() }}
+    </h2>
+  </v-sheet>
+
+  <v-card color="grey-darken-4" class="w-50 mx-auto">
+    <v-list-item v-for="item in items" :key="item.id">
       <template v-slot:prepend>
         <v-checkbox-btn
           v-model="item.done"
           @change="handleStatus(item)"
-          color="grey"
+          color="#01f6a8"
         ></v-checkbox-btn>
       </template>
 
       <v-list-item-title>
-        <span :class="item.done ? 'text-grey' : 'text-primary'">
+        <span
+          style="color: #01f6a8"
+          :class="['font-weight-medium', item.done ? 'text-grey' : '']"
+        >
           {{ item.title }}
         </span>
-
-        <v-icon
-          size="large"
-          class="mdi mdi-delete"
-          @click="startRemove(item)"
-        ></v-icon>
-        <v-icon
-          size="large"
-          class="mdi mdi-pencil"
-          @click="startUpdate(item)"
-        ></v-icon>
       </v-list-item-title>
-
       <template v-slot:append>
         <v-expand-x-transition>
-          <v-icon v-if="item.done" color="success">mdi-check</v-icon>
+          <v-icon v-if="item.done" color="green-accent-3">mdi-check</v-icon>
         </v-expand-x-transition>
+        <v-btn :loading="loadingRemove" color="transparent" class="elevation-0">
+          <v-icon color="#01f6a8" size="large" @click="handleRemove(item.id)">
+            mdi-delete
+          </v-icon>
+        </v-btn>
+        <v-btn color="transparent" class="elevation-0">
+          <v-icon color="#01f6a8" size="large" @click="startUpdate(item)">
+            mdi-pencil
+          </v-icon>
+        </v-btn>
       </template>
     </v-list-item>
   </v-card>
 
-  <v-card v-show="showUpdate">
-    <v-card-title>Edit</v-card-title>
-    <v-form @submit.prevent="handleUpdate(selectedId)">
-      <v-text-field v-model="updateTitle" outlined></v-text-field>
-    </v-form>
-    <v-card-actions>
-      <v-btn @click="showUpdate = !showUpdate">Close</v-btn>
-      <v-btn
-        :loading="loadingUpdate"
-        color="success"
-        @click="handleUpdate(selectedId)"
-        >Save</v-btn
-      >
-    </v-card-actions>
-  </v-card>
+  <create-modal
+    :showCreate="showCreate"
+    @close="showCreate = false"
+    @save="handleCreate"
+  />
 
-  <v-card v-show="showRemove">
-    <v-card-title>Delete</v-card-title>
-    <v-card-text>Are you shure you want to delete this item?</v-card-text>
-    <v-card-actions>
-      <v-btn @click="showRemove = !showRemove">Close</v-btn>
-      <v-btn
-        @click="handleRemove(selectedId)"
-        color="error"
-        :loading="loadingRemove"
-        >Delete</v-btn
-      >
-    </v-card-actions>
-  </v-card>
+  <update-modal
+    :showUpdate="showUpdate"
+    :selectedTitle="selectedTitle"
+    @close="showUpdate = false"
+    @save="handleUpdate"
+  />
 </template>
