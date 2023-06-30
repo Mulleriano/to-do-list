@@ -29,8 +29,8 @@ export default {
         localStorage.setItem("access_token", access_token);
         this.$router.push("/dashboard");
       } catch (err) {
-        const status = err.response.status;
-        if (status == 401) {
+        const message = err.message;
+        if (message == 401) {
           this.$emit("showAlert", this.alert);
         } else {
           this.alert.title = "Ocorreu um erro!";
