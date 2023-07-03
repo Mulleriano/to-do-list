@@ -1,4 +1,5 @@
 <script>
+import { userMixin } from "@/api/user";
 export default {
   data() {
     return {
@@ -12,9 +13,15 @@ export default {
       },
       drawer: true,
       rail: true,
+      user: {},
     };
   },
+  mixins: [userMixin],
   methods: {
+    async getUser() {
+      const { data } = await this.userInfo();
+      this.user = data;
+    },
     showAlert(data) {
       this.alert.type = data.type;
       this.alert.color = data.color;
@@ -37,6 +44,7 @@ export default {
   },
   mounted() {
     this.checkDashboard();
+    this.getUser();
   },
 };
 </script>
@@ -69,7 +77,7 @@ export default {
           :rail="rail"
           permanent
         >
-          <v-list-item title="User" nav @click="rail = false">
+          <v-list-item @click="rail = false" :title="user.username" nav>
             <template v-slot:append>
               <v-btn
                 color="#01f6a8"
@@ -79,7 +87,9 @@ export default {
               ></v-btn>
             </template>
             <template v-slot:prepend>
-              <v-icon color="#01f6a8" class="pa-5">mdi-account</v-icon>
+              <v-avatar color="grey-darken-3">
+                <v-icon color="#01f6a8"> mdi-account </v-icon>
+              </v-avatar>
             </template>
           </v-list-item>
 
@@ -94,17 +104,6 @@ export default {
               value="Dashboard"
               @click="this.$router.push('/dashboard')"
             ></v-list-item>
-            <!--             <v-list-item
-              prepend-icon="mdi-account"
-              title="My Account"
-              value="account"
-            ></v-list-item> -->
-
-            <!--             <v-list-item
-              prepend-icon="mdi-account-group-outline"
-              title="Users"
-              value="users"
-            ></v-list-item> -->
           </v-list>
 
           <template v-slot:append>
