@@ -149,7 +149,7 @@ export default {
     >
       <v-list-item>
         <v-list-title>
-          <router-link :to="`/Dashboard/listdetail/${toDo.id}`">
+          <router-link :to="`/dashboard/list-detail/${toDo.id}`">
             <v-card-title class="text-grey-darken-4">{{
               toDo.title
             }}</v-card-title>
