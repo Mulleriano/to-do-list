@@ -131,7 +131,7 @@ export default {
   ></lottie-player>
 
   <v-sheet
-    v-if="toDoList.length == 0"
+    v-else-if="toDoList.length == 0"
     position="relative"
     location="center"
     align="center"
@@ -139,24 +139,7 @@ export default {
     <p class="font-italic text-grey-darken-1">No To Do's yet, create one!</p>
   </v-sheet>
 
-  <v-sheet
-    color="transparent"
-    class="ma-6"
-    style="z-index: 20001"
-    position="fixed"
-    location="bottom"
-  >
-    <v-btn
-      color="#01f6a8"
-      icon="mdi-plus"
-      size="x-large"
-      @click="showCreate = !showCreate"
-    >
-      <v-icon color="grey-darken-4" size="x-large"> </v-icon
-    ></v-btn>
-  </v-sheet>
-
-  <v-sheet align="center">
+  <v-sheet v-else align="center">
     <v-card
       class="w-50 my-4 pa-4 pr-6"
       color="#01f6a8"
@@ -207,4 +190,21 @@ export default {
     @close="showUpdate = false"
     @save="updateList"
   />
+
+  <v-sheet
+    color="transparent"
+    class="ma-6"
+    style="z-index: 20001"
+    position="fixed"
+    location="bottom"
+  >
+    <v-btn
+      color="#01f6a8"
+      icon="mdi-plus"
+      size="x-large"
+      @click="showCreate = !showCreate"
+    >
+      <v-icon color="grey-darken-4" size="x-large"> </v-icon
+    ></v-btn>
+  </v-sheet>
 </template>
