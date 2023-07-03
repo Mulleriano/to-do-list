@@ -113,49 +113,33 @@ export default {
 </script>
 
 <template>
-  <v-sheet
-    v-show="loading"
-    style="transform: translate(-25%, -60%); z-index: 1"
-    position="absolute"
-    location="center"
-  >
-    <lottie-player
-      src="https://assets8.lottiefiles.com/packages/lf20_poqmycwy.json"
-      background="transparent"
-      speed="1.5"
-      style="width: 60%"
-      loop
-      autoplay
-    ></lottie-player>
-  </v-sheet>
+  <lottie-player
+    v-if="loading"
+    style="
+      width: 300px;
+      position: fixed;
+      top: 0%;
+      right: 50%;
+      transform: translateX(55%);
+      z-index: 1;
+    "
+    src="https://assets9.lottiefiles.com/private_files/lf30_ykdoon9j.json"
+    background="transparent"
+    speed="1"
+    loop
+    autoplay
+  ></lottie-player>
 
   <v-sheet
-    v-if="toDoList.length == 0"
-    position="fixed"
+    v-else-if="toDoList.length == 0"
+    position="relative"
     location="center"
     align="center"
   >
     <p class="font-italic text-grey-darken-1">No To Do's yet, create one!</p>
   </v-sheet>
 
-  <v-sheet
-    color="transparent"
-    class="ma-6"
-    style="z-index: 20001"
-    position="fixed"
-    location="bottom"
-  >
-    <v-btn
-      color="#01f6a8"
-      icon="mdi-plus"
-      size="x-large"
-      @click="showCreate = !showCreate"
-    >
-      <v-icon color="grey-darken-4" size="x-large"> </v-icon
-    ></v-btn>
-  </v-sheet>
-
-  <v-sheet align="center">
+  <v-sheet v-else align="center">
     <v-card
       class="w-50 my-4 pa-4 pr-6"
       color="#01f6a8"
@@ -206,4 +190,21 @@ export default {
     @close="showUpdate = false"
     @save="updateList"
   />
+
+  <v-sheet
+    color="transparent"
+    class="ma-6"
+    style="z-index: 20001"
+    position="fixed"
+    location="bottom"
+  >
+    <v-btn
+      color="#01f6a8"
+      icon="mdi-plus"
+      size="x-large"
+      @click="showCreate = !showCreate"
+    >
+      <v-icon color="grey-darken-4" size="x-large"> </v-icon
+    ></v-btn>
+  </v-sheet>
 </template>
