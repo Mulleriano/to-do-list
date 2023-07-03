@@ -109,47 +109,102 @@ export default {
 </script>
 
 <template>
-  <v-sheet
-    v-if="loading"
-    style="transform: translate(-25%, -60%); z-index: 1"
-    position="absolute"
-    location="center"
+  <v-btn
+    position="fixed"
+    class="ma-4"
+    color="#01f6a8"
+    icon="mdi-arrow-left"
+    size="large"
+    @click="this.$router.push('/dashboard')"
   >
-    <lottie-player
-      src="https://assets8.lottiefiles.com/packages/lf20_poqmycwy.json"
-      background="transparent"
-      speed="1.5"
-      style="width: 60%"
-      loop
-      autoplay
-    ></lottie-player>
-  </v-sheet>
+    <v-icon color="grey-darken-4" size="x-large"> </v-icon
+  ></v-btn>
+
+  <lottie-player
+    v-if="loading"
+    style="
+      width: 300px;
+      position: fixed;
+      top: 0%;
+      right: 50%;
+      transform: translateX(55%);
+      z-index: 1;
+    "
+    src="https://assets9.lottiefiles.com/private_files/lf30_ykdoon9j.json"
+    background="transparent"
+    speed="1"
+    loop
+    autoplay
+  ></lottie-player>
 
   <v-sheet
-    v-if="items.length == 0"
-    position="fixed"
+    v-else-if="items.length == 0"
+    position="relative"
     location="center"
     align="center"
   >
     <p class="font-italic text-grey-darken-1">No Tasks yet, create one!</p>
   </v-sheet>
 
-  <v-sheet
-    color="transparent"
-    class="ma-6"
-    style="z-index: 20001"
-    position="fixed"
-    location="left-top"
-  >
-    <v-btn
-      color="#01f6a8"
-      icon="mdi-arrow-left"
-      size="large"
-      @click="this.$router.push('/dashboard')"
-    >
-      <v-icon color="grey-darken-4" size="x-large"> </v-icon
-    ></v-btn>
+  <v-sheet align="center">
+    <h2 class="ma-4 text-grey-darken-4">
+      {{ listTitle.toUpperCase() }}
+    </h2>
+
+    <v-card align="left" color="grey-darken-4" class="w-50 mx-auto">
+      <v-list-item v-for="item in items" :key="item.id">
+        <template v-slot:prepend>
+          <v-checkbox-btn
+            v-model="item.done"
+            @change="handleStatus(item)"
+            color="#01f6a8"
+          ></v-checkbox-btn>
+        </template>
+
+        <v-list-item-title>
+          <span
+            style="color: #01f6a8"
+            :class="['font-weight-medium', item.done ? 'text-grey' : '']"
+          >
+            {{ item.title }}
+          </span>
+        </v-list-item-title>
+        <template v-slot:append>
+          <v-expand-x-transition>
+            <v-icon v-if="item.done" color="green-accent-3">mdi-check</v-icon>
+          </v-expand-x-transition>
+          <v-btn
+            :loading="loadingRemove"
+            color="transparent"
+            class="elevation-0"
+          >
+            <v-icon color="#01f6a8" size="large" @click="handleRemove(item.id)">
+              mdi-delete
+            </v-icon>
+          </v-btn>
+          <v-btn color="transparent" class="elevation-0">
+            <v-icon color="#01f6a8" size="large" @click="startUpdate(item)">
+              mdi-pencil
+            </v-icon>
+          </v-btn>
+        </template>
+      </v-list-item>
+    </v-card>
   </v-sheet>
+
+  <create-modal
+    :showCreate="showCreate"
+    @close="showCreate = false"
+    @save="handleCreate"
+  />
+
+  <update-modal
+    :showUpdate="showUpdate"
+    :selectedTitle="selectedTitle"
+    @close="showUpdate = false"
+    @save="handleUpdate"
+  />
+
   <v-sheet
     color="transparent"
     class="ma-6"
@@ -166,59 +221,4 @@ export default {
       <v-icon color="grey-darken-4" size="x-large"> </v-icon
     ></v-btn>
   </v-sheet>
-
-  <v-sheet class="ma-4" align="center">
-    <h2 class="text-grey-darken-4">
-      {{ listTitle.toUpperCase() }}
-    </h2>
-  </v-sheet>
-
-  <v-card color="grey-darken-4" class="w-50 mx-auto">
-    <v-list-item v-for="item in items" :key="item.id">
-      <template v-slot:prepend>
-        <v-checkbox-btn
-          v-model="item.done"
-          @change="handleStatus(item)"
-          color="#01f6a8"
-        ></v-checkbox-btn>
-      </template>
-
-      <v-list-item-title>
-        <span
-          style="color: #01f6a8"
-          :class="['font-weight-medium', item.done ? 'text-grey' : '']"
-        >
-          {{ item.title }}
-        </span>
-      </v-list-item-title>
-      <template v-slot:append>
-        <v-expand-x-transition>
-          <v-icon v-if="item.done" color="green-accent-3">mdi-check</v-icon>
-        </v-expand-x-transition>
-        <v-btn :loading="loadingRemove" color="transparent" class="elevation-0">
-          <v-icon color="#01f6a8" size="large" @click="handleRemove(item.id)">
-            mdi-delete
-          </v-icon>
-        </v-btn>
-        <v-btn color="transparent" class="elevation-0">
-          <v-icon color="#01f6a8" size="large" @click="startUpdate(item)">
-            mdi-pencil
-          </v-icon>
-        </v-btn>
-      </template>
-    </v-list-item>
-  </v-card>
-
-  <create-modal
-    :showCreate="showCreate"
-    @close="showCreate = false"
-    @save="handleCreate"
-  />
-
-  <update-modal
-    :showUpdate="showUpdate"
-    :selectedTitle="selectedTitle"
-    @close="showUpdate = false"
-    @save="handleUpdate"
-  />
 </template>
