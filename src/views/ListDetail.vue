@@ -62,12 +62,11 @@ export default {
     async handleRemove(id) {
       try {
         await this.removeItem(id);
-        this.showList();
       } catch (err) {
         const message = err.message;
         this.errorAlert(message);
       } finally {
-        this.showRemove = false;
+        this.showList();
       }
     },
     async handleUpdate(title) {
@@ -174,18 +173,18 @@ export default {
             <v-icon v-if="item.done" color="green-accent-3">mdi-check</v-icon>
           </v-expand-x-transition>
           <v-btn
-            :loading="loadingRemove"
             color="transparent"
             class="elevation-0"
+            @click="handleRemove(item.id)"
           >
-            <v-icon color="#01f6a8" size="large" @click="handleRemove(item.id)">
-              mdi-delete
-            </v-icon>
+            <v-icon color="#01f6a8" size="large"> mdi-delete </v-icon>
           </v-btn>
-          <v-btn color="transparent" class="elevation-0">
-            <v-icon color="#01f6a8" size="large" @click="startUpdate(item)">
-              mdi-pencil
-            </v-icon>
+          <v-btn
+            color="transparent"
+            class="elevation-0"
+            @click="startUpdate(item)"
+          >
+            <v-icon color="#01f6a8" size="large"> mdi-pencil </v-icon>
           </v-btn>
         </template>
       </v-list-item>
