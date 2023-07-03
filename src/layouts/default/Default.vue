@@ -77,7 +77,7 @@ export default {
           :rail="rail"
           permanent
         >
-          <v-list-item @click="rail = false" :title="user.username" nav>
+          <v-list-item @click="rail = !rail" :title="user.username" nav>
             <template v-slot:append>
               <v-btn
                 color="#01f6a8"
