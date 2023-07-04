@@ -6,6 +6,7 @@ import RemoveModal from "@/components/RemoveModal.vue";
 import { toDoListsApiMixin } from "@/api/toDoList";
 import handleAlertMixin from "@/mixins/handleAlert";
 import loadingMixin from "@/mixins/loading";
+import responsividade from "@/mixins/responsividade";
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
       loading: false,
     };
   },
-  mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin],
+  mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin, responsividade],
   methods: {
     async getLists() {
       try {
@@ -141,7 +142,8 @@ export default {
 
   <v-sheet v-else align="center">
     <v-card
-      class="w-50 my-4 pa-4 pr-6"
+      class="my-4 pa-sm-4 pr-sm-6"
+      :class="widthClass"
       color="#01f6a8"
       align="left"
       v-for="toDo in toDoList"
@@ -150,7 +152,7 @@ export default {
       <v-list-item>
         <v-list-title>
           <router-link :to="`/dashboard/list-detail/${toDo.id}`">
-            <v-card-title class="text-grey-darken-4">{{
+            <v-card-title class="text-grey-darken-4 pr-0">{{
               toDo.title
             }}</v-card-title>
           </router-link>
@@ -158,12 +160,12 @@ export default {
         <template v-slot:append>
           <v-icon
             class="mdi mdi-delete"
-            size="large"
+            :size="actionSize"
             @click="startRemove(toDo)"
           ></v-icon>
           <v-icon
             class="mdi mdi-pencil"
-            size="large"
+            :size="actionSize"
             @click="startUpdate(toDo)"
           ></v-icon>
         </template>
