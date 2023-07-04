@@ -4,8 +4,9 @@ import { toDoItemsApiMixin } from "@/api/toDoItems";
 import handleAlertMixin from "@/mixins/handleAlert";
 import loadingMixin from "@/mixins/loading";
 import CreateModal from "@/components/CreateModal.vue";
-
 import UpdateModal from "@/components/UpdateModal.vue";
+import responsividade from "@/mixins/responsividade";
+
 export default {
   components: { CreateModal, UpdateModal },
   mixins: [
@@ -13,6 +14,7 @@ export default {
     toDoItemsApiMixin,
     handleAlertMixin,
     loadingMixin,
+    responsividade,
   ],
   data() {
     return {
@@ -110,10 +112,10 @@ export default {
 <template>
   <v-btn
     position="fixed"
-    class="ma-4"
+    class="ma-3"
     color="#01f6a8"
     icon="mdi-arrow-left"
-    size="large"
+    :size="actionSize"
     @click="this.$router.push('/dashboard')"
   >
     <v-icon color="grey-darken-4" size="x-large"> </v-icon
@@ -150,8 +152,8 @@ export default {
       {{ listTitle.toUpperCase() }}
     </h2>
 
-    <v-card align="left" color="grey-darken-4" class="w-50 mx-auto">
-      <v-list-item v-for="item in items" :key="item.id">
+    <v-card align="left" color="grey-darken-4" class="mx-auto" :width="width">
+      <v-list-item class="pr-0" v-for="item in items" :key="item.id">
         <template v-slot:prepend>
           <v-checkbox-btn
             v-model="item.done"
@@ -172,20 +174,24 @@ export default {
           <v-expand-x-transition>
             <v-icon v-if="item.done" color="green-accent-3">mdi-check</v-icon>
           </v-expand-x-transition>
-          <v-btn
-            color="transparent"
-            class="elevation-0"
-            @click="handleRemove(item.id)"
-          >
-            <v-icon color="#01f6a8" size="large"> mdi-delete </v-icon>
-          </v-btn>
-          <v-btn
-            color="transparent"
-            class="elevation-0"
-            @click="startUpdate(item)"
-          >
-            <v-icon color="#01f6a8" size="large"> mdi-pencil </v-icon>
-          </v-btn>
+          <div class="px-4">
+            <v-icon
+              :size="actionSize"
+              color="#01f6a8"
+              class="mr-4"
+              @click="handleRemove(item.id)"
+            >
+              mdi-delete
+            </v-icon>
+            <v-icon
+              :size="actionSize"
+              color="#01f6a8"
+              class="elevation-0"
+              @click="startUpdate(item)"
+            >
+              mdi-pencil
+            </v-icon>
+          </div>
         </template>
       </v-list-item>
     </v-card>
