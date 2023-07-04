@@ -109,6 +109,17 @@ export default {
   mounted() {
     this.getLists();
   },
+  computed: {
+    width() {
+      return {
+        "w-50": this.$vuetify.display.mdAndUp,
+        "w-75": this.$vuetify.display.smAndDown,
+      };
+    },
+    actionSize() {
+      return this.$vuetify.display.smAndDown ? "small" : "large";
+    },
+  },
 };
 </script>
 
@@ -141,7 +152,8 @@ export default {
 
   <v-sheet v-else align="center">
     <v-card
-      class="w-50 my-4 pa-4 pr-6"
+      class="my-4 pa-sm-4 pr-sm-6"
+      :class="width"
       color="#01f6a8"
       align="left"
       v-for="toDo in toDoList"
@@ -150,7 +162,7 @@ export default {
       <v-list-item>
         <v-list-title>
           <router-link :to="`/dashboard/list-detail/${toDo.id}`">
-            <v-card-title class="text-grey-darken-4">{{
+            <v-card-title class="text-grey-darken-4 pr-0">{{
               toDo.title
             }}</v-card-title>
           </router-link>
@@ -158,12 +170,12 @@ export default {
         <template v-slot:append>
           <v-icon
             class="mdi mdi-delete"
-            size="large"
+            :size="actionSize"
             @click="startRemove(toDo)"
           ></v-icon>
           <v-icon
             class="mdi mdi-pencil"
-            size="large"
+            :size="actionSize"
             @click="startUpdate(toDo)"
           ></v-icon>
         </template>
