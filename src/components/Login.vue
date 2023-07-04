@@ -36,9 +36,7 @@ export default {
   <v-sheet min-width="300">
     <v-card
       color="transparent"
-      position="absolute"
       class="w-100 elevation-0"
-      location="center"
       title="Login"
     >
       <v-form v-model="form" @submit.prevent="onSubmit">
