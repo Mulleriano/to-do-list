@@ -1,7 +1,8 @@
 <script>
 import { authAPiMixin } from "@/api/auth";
+import responsividade from "@/mixins/responsividade";
 export default {
-  mixins: [authAPiMixin],
+  mixins: [authAPiMixin, responsividade],
   data() {
     return {
       alert: {
@@ -24,13 +25,6 @@ export default {
       setTimeout(() => {
         this.alert.show = false;
       }, 2000);
-    },
-  },
-  computed: {
-    height() {
-      return {
-        "h-auto": this.$vuetify.display.smAndDown,
-      };
     },
   },
 };
@@ -60,7 +54,7 @@ export default {
         max-width="800"
         height="550"
         class="rounded-lg mx-8 my-8 d-flex justify-left flex-column flex-sm-row align-sm-center elevation-15"
-        :class="height"
+        :class="heightAuto"
       >
         <v-card
           color="grey-darken-4"
