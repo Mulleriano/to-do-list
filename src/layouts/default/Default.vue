@@ -73,7 +73,7 @@ export default {
   </div>
 
   <v-app>
-    <v-card height="100vh">
+    <v-card height="100vh" class="rounded-0">
       <v-layout>
         <v-navigation-drawer
           color="grey-darken-4"
