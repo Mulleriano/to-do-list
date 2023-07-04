@@ -1,5 +1,6 @@
 <script>
 import { userMixin } from "@/api/user";
+import { capitalize } from "vue";
 export default {
   data() {
     return {
@@ -41,6 +42,9 @@ export default {
         this.rail = true;
       }
     },
+    capitalize(username) {
+      return username?.charAt(0).toUpperCase() + username?.slice(1);
+    },
   },
   mounted() {
     this.checkDashboard();
@@ -77,7 +81,11 @@ export default {
           :rail="rail"
           permanent
         >
-          <v-list-item @click="rail = !rail" :title="user.username" nav>
+          <v-list-item
+            @click="rail = !rail"
+            :title="capitalize(user.username)"
+            nav
+          >
             <template v-slot:append>
               <v-btn
                 color="#01f6a8"
