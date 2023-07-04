@@ -6,6 +6,7 @@ import RemoveModal from "@/components/RemoveModal.vue";
 import { toDoListsApiMixin } from "@/api/toDoList";
 import handleAlertMixin from "@/mixins/handleAlert";
 import loadingMixin from "@/mixins/loading";
+import responsividade from "@/mixins/responsividade";
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
       loading: false,
     };
   },
-  mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin],
+  mixins: [toDoListsApiMixin, handleAlertMixin, loadingMixin, responsividade],
   methods: {
     async getLists() {
       try {
@@ -109,17 +110,6 @@ export default {
   mounted() {
     this.getLists();
   },
-  computed: {
-    width() {
-      return {
-        "w-50": this.$vuetify.display.mdAndUp,
-        "w-75": this.$vuetify.display.smAndDown,
-      };
-    },
-    actionSize() {
-      return this.$vuetify.display.smAndDown ? "small" : "large";
-    },
-  },
 };
 </script>
 
@@ -153,7 +143,7 @@ export default {
   <v-sheet v-else align="center">
     <v-card
       class="my-4 pa-sm-4 pr-sm-6"
-      :class="width"
+      :class="widthClass"
       color="#01f6a8"
       align="left"
       v-for="toDo in toDoList"
